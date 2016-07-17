@@ -3,7 +3,7 @@ using static System.Math;
 
 namespace ConsoleApp1
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         public static decimal Square(decimal target)
         {
