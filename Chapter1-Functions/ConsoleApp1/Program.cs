@@ -7,6 +7,26 @@ namespace ConsoleApp1
     {
         private static void Main(string[] args)
         {
+            //foreach (var ii in Enumerable.Range(0, 10))
+            //{
+            //    foreach (var jj in Enumerable.Range(0, ii + 1))
+            //    {
+            //        Console.Write($"{Extensions.PascalRecursive(ii, jj)} ");
+            //    }
+            //    Console.WriteLine();
+            //}
+
+            Console.WriteLine($"2^    10 = {Extensions.Pow(2, 10):#,0}");
+            Console.WriteLine($"2^    20 = {Extensions.Pow(2, 20):#,0}");
+            Console.WriteLine($"2^   100 = {Extensions.Pow(2, 100):#,0}");
+            Console.WriteLine($"2^  1000 = {Extensions.Pow(2, 1000):#,0}");
+            Console.WriteLine($"2^ 10000 = {Extensions.Pow(2, 10000):#,0}");
+            //Console.WriteLine($"2^100000 = {Extensions.Pow(2, 100000):#,0}");
+
+            foreach (var ii in Enumerable.Range(1, 100))
+            {
+                Console.WriteLine($"2^{ii} = {Extensions.Pow(2, (uint)ii):#,0}");
+            }
         }
 
         private static void TryMySqrt()
