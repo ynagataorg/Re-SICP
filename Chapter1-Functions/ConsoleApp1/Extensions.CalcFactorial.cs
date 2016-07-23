@@ -21,24 +21,17 @@
         }
 
         public static uint Factorial(uint n)
-        {
-            // linear recursive process.
-            return n == 0
+            => FactorialIterative(1, 1, n);
+
+
+        public static uint FactorialRecursive(uint n)
+            => n == 0
                 ? 1
-                : n * Factorial(n - 1);
-        }
+                : n * FactorialRecursive(n - 1);
 
-        public static uint Factorial2(uint n)
-        {
-            return FactIter(1, 1, n);
-        }
-
-        private static uint FactIter(uint product, uint count, uint maxCount)
-        {
-            // linear iterative process.
-            return (count > maxCount)
+        private static uint FactorialIterative(uint product, uint count, uint maxCount)
+            => (count > maxCount)
                 ? product
-                : FactIter(count * product, count + 1, maxCount);
-        }
+                : FactorialIterative(count * product, count + 1, maxCount);
     }
 }

@@ -4,13 +4,19 @@ namespace ConsoleApp1
 {
     public static partial class Extensions
     {
-        private static BigInteger Square(this BigInteger target) => target * target;
+        private static BigInteger Square(this BigInteger target)
+            => target * target;
 
-        //public static BigInteger Pow(BigInteger b, uint n) => Extensions.PowRecursive(b, n);
-        public static BigInteger Pow(BigInteger b, uint n) => Extensions.PowIterative(1, b, n);
+        public static BigInteger Pow(this int b, uint n)
+            => ((BigInteger)b).Pow(n);
+
+        //public static BigInteger Pow(this BigInteger b, uint n)
+        //    => b.PowRecursive(n);
+        public static BigInteger Pow(this BigInteger b, uint n)
+            => ((BigInteger)1).PowIterative(b, n);
 
         // Section 1.2.4
-        private static BigInteger PowRecursive(BigInteger b, uint n)
+        private static BigInteger PowRecursive(this BigInteger b, uint n)
         {
             if (n == 0)
             {
@@ -18,12 +24,12 @@ namespace ConsoleApp1
             }
 
             return n % 2 == 0 
-                ? Extensions.PowRecursive(b, n / 2).Square()
-                : b * Extensions.PowRecursive(b, n - 1);
+                ? b.PowRecursive(n / 2).Square()
+                : b * b.PowRecursive(n - 1);
         }
 
         // Exercise 1.17
-        private static BigInteger PowIterative(BigInteger a, BigInteger b, uint n)
+        private static BigInteger PowIterative(this BigInteger a, BigInteger b, uint n)
         {
             if (n == 0)
             {
@@ -31,8 +37,8 @@ namespace ConsoleApp1
             }
 
             return n % 2 == 0
-                ? Extensions.PowIterative(a, b.Square(), n / 2)
-                : Extensions.PowIterative(a * b, b, n - 1);
+                ? a.PowIterative(b.Square(), n / 2)
+                : (a * b).PowIterative(b, n - 1);
         }
     }
 }

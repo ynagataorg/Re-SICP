@@ -5,28 +5,19 @@ namespace ConsoleApp1
 {
     public static partial class Extensions
     {
-        public static decimal Square(decimal target)
-        {
-            return target * target;
-        }
+        public static decimal Square(this decimal target)
+            => target * target;
 
         // Section 1.1.7:
-        public static decimal MySqrt(decimal target)
-        {
-            //return MySqrtIter(1m, target);
-            return MySqrtIter2(1m, 1m / target, target);
-        }
+        public static decimal MySqrt(this decimal target)
+            => MySqrtIter2(1m, 1m / target, target);
 
-        public static decimal Cube(decimal target)
-        {
-            return target * target * target;
-        }
+        public static decimal Cube(this decimal target)
+            => target * target * target;
 
         // Exercise 1.8:
-        public static decimal MyCbrt(decimal target)
-        {
-            return MyCbrtIter(1m, 1m / target, target);
-        }
+        public static decimal MyCbrt(this decimal target)
+            => MyCbrtIter(1m, 1m / target, target);
 
         // Section 1.1.7:
         private static decimal MySqrtIter(decimal guessValue, decimal target)
