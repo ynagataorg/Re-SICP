@@ -6,3 +6,4 @@
 /Chapter1-Functions/ConsoleApp1/obj/Debug/netcoreapp1.0
 *.user
 /Chapter1-Functions/.vs
+*.TMP

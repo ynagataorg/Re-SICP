@@ -7,10 +7,6 @@ namespace ConsoleApp1
     {
         private static void Main(string[] args)
         {
-            //TryMySqrt();
-            //TryMyCbrt();
-            TryMyFact();
-            TryAck();
         }
 
         private static void TryMySqrt()
