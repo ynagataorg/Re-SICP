@@ -302,3 +302,27 @@ fast-mult-i
 896 0 1001
 1001
 
+; ex.1.19
+(defun fib-fast (n)
+  (defun fib-iter (a b p q counter)
+    (cond ((= counter 0) b)
+	  ((even? counter)
+	   (fib-iter a
+		     b
+		     (+ (* p p) (* q q))
+		     (+ (* 2 p q) (* q q))
+		     (/ counter 2)))
+	  (t (fib-iter (+ (* b q) (* a q) (* a p))
+		       (+ (* b p) (* a q))
+		       p
+		       q
+		       (- counter 1)))))
+  (fib-iter 1 0 0 1 n))
+fib-fast
+
+(fib-fast 10)
+55
+
+(fib-fast 100)
+354224848179261915075
+
