@@ -1,3 +1,6 @@
+(defun square (n) (* n n))
+square
+
 ; 1.2.1
 (defun factorial_ (n)
   (if (<= n 1)
@@ -352,14 +355,14 @@ gcd-impl
 2
 
 ; 1.2.6
-(defun smallest-divisor (n)
+(defun smallest-divisor_ (n)
   (defun divides? (a b) (= (mod b a) 0))
   (defun find-divisor (n d)
     (cond ((> (* d d) n) n)
 	  ((divides? d n) d)
 	  (t (find-divisor n (+ d 1)))))
   (find-divisor n 2))
-smallest-divisor
+smallest-divisor_
 
 (defun prime? (n)
   (= n (smallest-divisor n)))
@@ -373,7 +376,7 @@ prime?
 7
 
 ; Carmichael numbers
-(setq carmichaels '(561 1105  1729 2465 2821 6601))
+(setq carmichaels '(561 1105 1729 2465 2821 6601))
 (561 1105 1729 2465 2821 6601)
 
 (mapcar #'prime? carmichaels)
@@ -410,4 +413,89 @@ fermat-prime?
 (mapcar (lambda (n) (fermat-prime? n 100)) carmichaels)
 (t t t t t t) ; forall a < n, expmod a n n = a (mod n).
 
+; ex.1.22
+(defun search-for-primes (begin counter)
+  (defun search-iter (n discovered counter)
+    (cond ((= discovered counter) t)
+	  ((prime? n) (progn
+			(format t "~A is prime.~%" n)
+			(search-iter (+ n 1) (+ discovered 1) counter)))
+	  (t (search-iter (+ n 1) discovered counter))))
+  (search-iter begin 0 counter))
+search-for-primes
+
+(search-for-primes 1000 3)
+1009 is prime.
+1013 is prime.
+1019 is prime.
+t
+
+(search-for-primes 10000 3)
+10007 is prime.
+10009 is prime.
+10037 is prime.
+t
+
+(search-for-primes 100000 3)
+100003 is prime.
+100019 is prime.
+100043 is prime.
+t
+
+(search-for-primes 1000000 3)
+1000003 is prime.
+1000033 is prime.
+1000037 is prime.
+t
+
+; ex.1.23
+(defun smallest-divisor (n)
+  (defun divides? (a b) (= (mod b a) 0))
+  (defun next (test-divisor)
+    (if (= test-divisor 2) 3 (+ test-divisor 2)))
+  (defun find-divisor (n d)
+    (cond ((> (* d d) n) n)
+	  ((divides? d n) d)
+	  (t (find-divisor n (next d)))))
+  (find-divisor n 2))
+smallest-divisor
+
+(search-for-primes 10000 3)
+10007 is prime.
+10009 is prime.
+10037 is prime.
+t
+
+(search-for-primes 100000 3)
+100003 is prime.
+100019 is prime.
+100043 is prime.
+t
+
+(search-for-primes 1000000 3)
+1000003 is prime.
+1000033 is prime.
+1000037 is prime.
+t
+
+; ex.1.27
+(defun fermat-test-all (n)
+  (defun try-it (a)
+    (= (expmod a n n) a))
+  (defun try-iter (a)
+    (cond ((= n 1) nil)
+          ((= a n) t)
+	  ((try-it a) (try-iter (+ a 1)))
+	  (t nil)))
+  (try-iter 1))
+fermat-test-all
+
+(mapcar (lambda (n) (fermat-test-all n)) '(1 2 3 5 7 9 11 13 15 17 19 21 23 25))
+(nil t t t t nil t t nil t t nil t nil)
+
+(fermat-test-all 100)
+nil
+
+(mapcar (lambda (n) (fermat-test-all n)) '(561 1105))
+(t t)
 
