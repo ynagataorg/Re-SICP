@@ -499,3 +499,41 @@ nil
 (mapcar (lambda (n) (fermat-test-all n)) '(561 1105))
 (t t)
 
+; ex.1.28 (Miller-Rabin test)
+#|
+thx to:
+[Bill the Lizard: SICP Exercise 1.28: The Miller-Rabin test]
+(http://www.billthelizard.com/2010/03/sicp-exercise-128-miller-rabin-test.html)
+|#
+(defun miller-rabin-test (n)
+  (defun square-with-check (x m)
+    (let ((mx (mod (square x) m)))
+      (cond ((= x 1) mx)
+	    ((= x (- m 1)) mx)
+	    ((= mx 1) 0)
+	    (t mx))))
+  (defun expmod-with-check (base e m)
+    (cond ((= e 0) 1)
+	  ((even? e)
+	   (square-with-check (expmod-with-check base (/ e 2) m) m))
+	  (t
+	   (mod
+	    (* base (expmod-with-check base (- e 1) m))
+	    m))))
+  (defun try-it (a)
+    (= (expmod-with-check a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+miller-rabin-test
+
+(defun fast-prime? (n times)
+  (cond ((= times 0) t)
+	((miller-rabin-test n) (miller-rabin-prime? n (- times 1)))
+	(t nil)))
+fast-prime?
+
+(mapcar (lambda (n) (fast-prime? n 10)) '(199 1999 19999))
+(t t nil)
+
+(mapcar (lambda (n) (fast-prime? n 10)) carmichaels)
+(nil nil nil nil nil nil)
+
