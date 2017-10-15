@@ -291,6 +291,64 @@ factorial-with-accumulate-i
 3628800
 
 ; ex.1.33 (filtered-accumulate)
+(define (miller-rabin-test n)
+  (define (square-with-check x m)
+    (let ((mx (remainder (square x) m)))
+      (cond ((= x 1) mx)
+            ((= x (- m 1)) mx)
+            ((= mx 1) 0)
+            (else mx))))
+  (define (expmod-with-check base e m)
+    (cond ((= e 0) 1)
+          ((even? e)
+           (square-with-check (expmod-with-check base (/ e 2) m) m))
+          (else
+           (remainder
+            (* base (expmod-with-check base (- e 1) m))
+            m))))
+  (define (try-it a)
+    (= (expmod-with-check a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+miller-rabin-test
+
+(define (prime? n (times 10))
+  (cond ((< n 2) #f)
+        ((= times 0) #t)
+        ((miller-rabin-test n) (prime? n (- times 1)))
+        (else #f)))
+prime?
+
+(define (gcd-impl a b)
+  (if (= b 0)
+        a
+        (gcd-impl b (remainder a b))))
+gcd-impl
+
+(define (filtered-accumulate combiner null-value function a next b predicate)
+  (define (acc a result)
+    (if (> a b)
+        result
+        (acc (next a)
+             (combiner result
+                       (if (predicate a) (function a) null-value)))))
+  (acc a null-value))
+filtered-accumulate
+
+(define (ex-1-33-a a b)
+  (filtered-accumulate + 0 square a inc b prime?))
+
+(= (ex-1-33-a 1 10) (+ (* 2 2) (* 3 3) (* 5 5) (* 7 7)))
+#t
+
+(= (ex-1-33-a 11 20) (+ (* 11 11) (* 13 13) (* 17 17) (* 19 19)))
+#t
+
+(define (ex-1-33-b n)
+  (filtered-accumulate * 1 id 1 inc n
+                       (lambda (i) (= (gcd-impl i n) 1))))
+
+(= (ex-1-33-b 8) (* 3 5 7))
+#t
 
 ; 1.3.2
 
