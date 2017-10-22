@@ -5,6 +5,8 @@
 
 (define (cube a) (* a a a))
 
+(define (average a b) (/ (+ a b) 2))
+
 (define (iota count (start 0) (step 1))
   (if (= count 0)
       '()
@@ -410,4 +412,37 @@ application: not a procedure;
   given: 2
   arguments...: 2
 |#
+
+;1.3.3
+;f(a) < 0 < f(b) => exists x, a < x < b, f(x) = 0.
+(define (search f neg-point pos-point)
+  (define (close-enough? x y)
+    (< (abs (- x y)) 0.001))
+  (let ((mid-point (average neg-point pos-point)))
+    (if (close-enough? neg-point pos-point)
+        mid-point
+        (let ((test-value (f mid-point)))
+          (cond ((positive? test-value)
+                 (search f neg-point mid-point))
+                ((negative? test-value)
+                 (search f mid-point pos-point))
+                (else mid-point))))))
+(define (half-interval-method f a b)
+  (let ((a-value (f a))
+        (b-value (f b)))
+    (cond ((and (negative? a-value) (positive? b-value))
+           (search f a b))
+          ((and (negative? b-value) (positive? a-value))
+           (search f b a))
+          (else
+           (error "Values are not of opposite sign" a b)))))
+half-interval-method
+
+(half-interval-method sin 2.0 4.0)
+3.14111328125
+
+(half-interval-method (lambda (x) (- (* x x) 2))
+                      1.0
+                      2.0)
+1.41455078125
 
