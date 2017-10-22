@@ -23,14 +23,14 @@ sum-integers_
       (+ (cube a) (sum-cubes_ (+ a 1) b))))
 sum-cubes_
 
-(define (pi-sum_ a b)
+(define (pi-sum__ a b)
   (if (> a b)
       0
       (+ (/ 1.0 (* a (+ a 2)))
-         (pi-sum_ (+ a 4) b))))
-pi-sum_
+         (pi-sum__ (+ a 4) b))))
+pi-sum__
 
-(map (lambda (b) (* 8 (pi-sum_ 1 b))) (iota 10 3 4))
+(map (lambda (b) (* 8 (pi-sum__ 1 b))) (iota 10 3 4))
 #|
 '(2.6666666666666665
   2.895238095238095
@@ -44,7 +44,7 @@ pi-sum_
   3.0916238066678385)
 |#
 
-(map (lambda (b) (* 8 (pi-sum_ 1 b))) (iota 10 1003 4))
+(map (lambda (b) (* 8 (pi-sum__ 1 b))) (iota 10 1003 4))
 #|
 '(3.139600623693464
   3.1396085285584143
@@ -58,7 +58,7 @@ pi-sum_
   3.1396695784447006)
 |#
 
-(map (lambda (b) (* 8 (pi-sum_ 1 b))) (iota 10 10003 4))
+(map (lambda (b) (* 8 (pi-sum__ 1 b))) (iota 10 10003 4))
 #|
 '(3.1413927335598038
   3.1413928134638907
@@ -98,17 +98,17 @@ id
 (sum-integers 1 10)
 55
 
-(define (pi-sum a b)
+(define (pi-sum_ a b)
   (define (function x)
     (/ 1.0 (* x (+ x 2))))
   (define (next x) (+ x 4))
   (sum-r function a next b))
-pi-sum
+pi-sum_
 
-(* 8 (pi-sum 1 1000))
+(* 8 (pi-sum_ 1 1000))
 3.139592655589783
 
-(map (lambda (to) (* 8 (pi-sum 1 to)))
+(map (lambda (to) (* 8 (pi-sum_ 1 to)))
      (map (lambda (e) (expt 10 e)) (iota 5 1)))
 #|
 '(2.976046176046176
@@ -117,7 +117,7 @@ pi-sum
   3.141392653591793
   3.141572653589795)
 
-(map (lambda (to) (* 8 (pi-sum 1 to)))
+(map (lambda (to) (* 8 (pi-sum_ 1 to)))
      (map (lambda (e) (expt 10 e)) (iota 7 1)))
 '(2.976046176046176
   3.1215946525910105
@@ -128,18 +128,18 @@ pi-sum
   3.141592453589793)
 |#
 
-(define (integral f a b dx)
+(define (integral_ f a b dx)
   (define (add-dx x) (+ x dx))
   (* dx (sum-r f (+ a (/ dx 2.0)) add-dx b)))
-integral
+integral_
 
-(integral cube 0 1 0.01)
+(integral_ cube 0 1 0.01)
 0.24998750000000042
 
-(integral cube 0 1 0.001)
+(integral_ cube 0 1 0.001)
 0.249999875000001
 
-(map (lambda (dx) (integral cube 0 1 dx))
+(map (lambda (dx) (integral_ cube 0 1 dx))
      (map (lambda (e) (expt 10 e)) (iota 5 -1 -1)))
 #|
 '(0.24874999999999994
@@ -351,4 +351,63 @@ filtered-accumulate
 #t
 
 ; 1.3.2
+(define (pi-sum a b)
+  (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+       a
+       (lambda (x) (+ x 4))
+       b))
+pi-sum
+
+(* 8 (pi-sum 1 1000))
+3.139592655589782
+
+(define (integral f a b dx)
+  (* (sum f
+          (+ a (/ dx 2.0))
+          (lambda (x) (+ x dx))
+          b)
+     dx))
+integral
+
+(integral cube 0 1 0.001)
+0.24999987500000073
+
+(integral cube 0 1 0.0001)
+0.24999999874993337
+
+((lambda (x y z) (+ x y (square z)))
+ 1 2 3)
+(+ 1 2 (* 3 3))
+
+; f(x,y) = x(1+xy)^2 + y(1-y) + (1+xy)(1-y)
+; a = 1+xy, b = 1-y, f(x,y) = xa^2 + yb + ab
+(define (sec1-3-2-1 x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+sec1-3-2-1
+
+; ex.1.34
+(define (f g) (g 2))
+(f square)
+4
+(f (lambda (z) (* z (+ z 1))))
+6
+
+#|
+> (f f)
+application: not a procedure;
+ expected a procedure that can be applied to arguments
+  given: 2
+  arguments...: 2
+
+(f f) -> (f 2) -> (2 2)
+> (2 2)
+application: not a procedure;
+ expected a procedure that can be applied to arguments
+  given: 2
+  arguments...: 2
+|#
 
