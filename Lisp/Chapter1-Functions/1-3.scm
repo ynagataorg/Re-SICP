@@ -413,7 +413,7 @@ application: not a procedure;
   arguments...: 2
 |#
 
-;1.3.3
+; 1.3.3
 ;f(a) < 0 < f(b) => exists x, a < x < b, f(x) = 0.
 (define (search f neg-point pos-point)
   (define (close-enough? x y)
@@ -475,7 +475,7 @@ sqrt-fixed
 (sqrt-fixed 2)
 1.414213562373095
 
-; 1.35
+; ex.1.35
 ; phi^2 = phi + 1 => phi = 1 + 1 / phi
 ; so phi is fixed-point of function: phi = 1 + 1 / phi
 (define phi-fixed
@@ -488,4 +488,60 @@ phi-fixed
 (- (square phi-fixed) (+ phi-fixed 1))
 -6.04186452868305e-007
 
+; ex.1.36
+(define (fixed-point-with-display f first-guess)
+  (define tolerance 1e-6)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (display guess)
+    (newline)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+fixed-point-with-display
+
+(fixed-point-with-display
+ (lambda (x) (average x (+ 1 (/ 1 x))))
+ 1.0)
+#|
+1.0
+1.5
+1.5833333333333333
+1.6074561403508771
+1.6147785476652068
+1.61702925556443
+1.617723628348796
+1.6179380934832117
+1.6180043565683029
+1.6180248320058461
+1.6180311591702674
+1.618033114362648
+|#
+1.6180337185494662
+
+(fixed-point-with-display
+ (lambda (x) (/ (log 1000) (log x)))
+ 10)
+4.555535421530586 ; by 39 steps
+
+(fixed-point-with-display
+ (lambda (x) (average x (/ (log 1000) (log x))))
+ 10)
+#|
+10
+6.5
+5.095215099176933
+4.668760681281611
+4.57585730576714
+4.559030116711325
+4.55613168520593
+4.555637206157649
+4.55555298754564
+4.555538647701617
+4.555536206185039
+|#
+4.555535790493355 ; by 11 steps
 
