@@ -446,3 +446,46 @@ half-interval-method
                       2.0)
 1.41455078125
 
+(define (fixed-point f first-guess)
+  (define tolerance 1e-6)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+fixed-point
+
+(fixed-point cos 1.0)
+0.7390855263619245
+
+(fixed-point (lambda (y) (+ (sin y) (cos y)))
+             1.0)
+1.2587277968014188
+
+; sqrt(x) = y => y^2 = x => y = x / y
+; so sqrt(x) is fixed-point of function: y = x / y
+(define (sqrt-fixed x)
+  (fixed-point (lambda (y) (average y (/ x y)))
+               1.0))
+sqrt-fixed
+
+(sqrt-fixed 2)
+1.414213562373095
+
+; 1.35
+; phi^2 = phi + 1 => phi = 1 + 1 / phi
+; so phi is fixed-point of function: phi = 1 + 1 / phi
+(define phi-fixed
+  (fixed-point (lambda (x) (average x (+ 1 (/ 1 x))))
+               1.0))
+
+phi-fixed
+1.6180337185494662
+
+(- (square phi-fixed) (+ phi-fixed 1))
+-6.04186452868305e-007
+
+
