@@ -545,3 +545,64 @@ fixed-point-with-display
 |#
 4.555535790493355 ; by 11 steps
 
+; ex.1.37-a (continued-fraction: recurive process)
+(define (cont-frac n d k)
+  (if (= k 0)
+      0
+      (/ (n k)
+         (+ (d k) (cont-frac n d (- k 1))))))
+cont-frac
+
+(define (phi-by-cont-frac k)
+  (/ 1
+     (cont-frac (lambda (i) 1.0)
+                (lambda (i) 1.0)
+                k)))
+
+; phi is 1.6180339887... (by Wikipedia)
+(map phi-by-cont-frac (iota 25 1))
+#|
+'(1.0
+  2.0
+  1.5
+  1.6666666666666665
+  1.6
+  1.625
+  1.6153846153846154 <- here, 2 decimal: k= 7.
+  1.619047619047619
+  1.6176470588235294
+  1.6181818181818184 <- here, 3 decimal: k=10.
+  1.6179775280898876
+  1.6180555555555558 <- here, 4 decimal: k=12.
+  1.6180257510729614
+  1.6180371352785146 <- here, 5 decimal: k=14.
+  1.6180327868852458
+  1.618034447821682
+  1.618033813400125  <- here, 6 decimal: k=17.
+  1.6180340557275543
+  1.6180339631667064 <- here, 7 decimal: k=19.
+  1.6180339985218037
+  1.6180339850173577 <- here, 8 decimal: k=21.
+  1.6180339901755971
+  1.6180339882053252 <- here, 9 decimal: k=23.
+  1.6180339889579018
+  1.6180339886704433)
+|#
+
+(define (cont-frac-iterative n d k)
+  (define (iter k result)
+    (if (= k 0)
+        result
+        (iter (- k 1)
+              (/ (n k)
+                 (+ (d k) result)))))
+  (iter k 0))
+cont-frac-iterative
+
+(/ 1
+   (cont-frac-iterative (lambda (i) 1.0)
+                        (lambda (i) 1.0)
+                        12))
+1.6180555555555558
+
+
