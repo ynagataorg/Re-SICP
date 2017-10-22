@@ -546,11 +546,14 @@ fixed-point-with-display
 4.555535790493355 ; by 11 steps
 
 ; ex.1.37-a (continued-fraction: recurive process)
+; bug fixed. thx to [sicp-ex-1.37](http://community.schemewiki.org/?sicp-ex-1.37).
 (define (cont-frac n d k)
-  (if (= k 0)
-      0
-      (/ (n k)
-         (+ (d k) (cont-frac n d (- k 1))))))
+  (define (iter i)
+    (if (> i k)
+        0
+        (/ (n i)
+           (+ (d i) (iter (+ i 1))))))
+  (iter 1))
 cont-frac
 
 (define (phi-by-cont-frac k)
@@ -605,4 +608,19 @@ cont-frac-iterative
                         12))
 1.6180555555555558
 
+; ex.1.38
+(define (napier-by-cont-frac which k)
+  (define (euler-d i)
+    (if (= (remainder i 3) 2)
+        (* 2 (/ (+ i 1) 3))
+        1))
+  (+ 2
+     (which (lambda (i) 1.0)
+            euler-d
+            k)))
+napier-by-cont-frac
+
+(map (lambda (k) (napier-by-cont-frac cont-frac k)) (iota 5 10))
+(map (lambda (k) (napier-by-cont-frac cont-frac-iterative k)) (iota 5 10))
+;'(2.7182817182817183 2.7182818352059925 2.7182818229439496 2.718281828735696 2.7182818284454013)
 
