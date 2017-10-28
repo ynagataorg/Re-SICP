@@ -752,3 +752,21 @@ compose
 
 ((compose square inc) 6)
 49
+
+; ex.1.43
+(define (repeated f n)
+  (lambda (x)
+    (if (> n 1)
+        ((compose f (repeated f (- n 1))) x)
+        (f x))))
+repeated
+
+((repeated square 2) 5)
+625 ; means (square (square 5)).
+
+((repeated square 3) 4)
+65536
+;means (square (square (square 4)))
+;    = (square (square 2^4))
+;    = (square 2^8)
+;    = 2^16
