@@ -181,3 +181,59 @@ def pascal(n, k):
 
 [[pascal(n, k) for k in range(1, n + 1)] for n in range(1, 8 + 1)]
 
+# ex.1.15
+def cube(x):
+    return x * x * x
+
+def sine(angle):
+    def p(x):
+        print('p: ', angle)
+        return (3*x - 4*cube(x))
+    if (not (abs(angle) > 0.1)):
+        return angle
+    else:
+        return p(sine(angle / 3.0))
+
+sine(12.15)
+
+# 1.2.4
+def expt_r(base, n):
+    if (n == 0):
+        return 1
+    else:
+        return base * expt_r(base, n-1)
+
+def expt_i(base, n):
+    def expt_iter(base, counter, product):
+        if (counter == 0):
+            return product
+        else:
+            return expt_iter(base, counter - 1, base * product)
+    return expt_iter(base, n, 1)
+
+expt_r(2, 10)
+expt_i(2, 10)
+
+def fast_expt_r(base, n):
+    if (n == 0):
+        return 1
+    elif (n % 2 == 0):
+        return square(fast_expt_r(base, n / 2))
+    else:
+        return base * fast_expt_r(base, n - 1)
+
+fast_expt_r(2, 10)
+
+# ex.1.16
+def fast_expt_i(base, n):
+    def expt_iter(base, n, result):
+        if (n == 0):
+            return result
+        elif (n % 2 == 0):
+            return expt_iter(square(base), n / 2, result)
+        else:
+            return expt_iter(base, n - 1, base * result)
+    return expt_iter(base, n, 1)
+
+fast_expt_i(2, 10)
+fast_expt_i(2, 100)
