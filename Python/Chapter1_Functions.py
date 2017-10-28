@@ -78,3 +78,106 @@ def my_cbrt(x):
 >>> my_cbrt(1e-18)
 1.0005872910315646e-06
 """
+
+# 1.2.1
+def factorial_r(n):
+    # calc n! by recursive-process.
+    if (n == 1):
+        return 1
+    else:
+        return n * factorial_r(n - 1)
+
+factorial_r(6)
+
+def factorial_i(n):
+    # calc n! by iterative-process.
+    def fact_iter(product, count):
+        if (count > n):
+            return product
+        else:
+            return fact_iter(count * product, count + 1)
+    return fact_iter(1, 1)
+
+factorial_i(6)
+
+# 1.2.2
+def fib_ugry(n):
+    if (n == 0):
+        return 0
+    elif (n == 1):
+        return 1
+    else:
+        return fib_ugry(n - 1) + fib_ugry(n - 2)
+
+fib_ugry(10)
+
+def fib(n):
+    def fib_iter(a, b, count):
+        if (count == 0):
+            return b
+        else:
+            return fib_iter(a + b, a, count - 1)
+    return fib_iter(1, 0, n)
+
+fib(10)
+
+def count_change(amount):
+    def cc(amount, kinds_of_coins):
+        if (amount == 0):
+            return 1
+        elif (amount < 0) or (kinds_of_coins == 0):
+            return 0
+        else:
+            return cc(amount, kinds_of_coins - 1) \
+                 + cc(amount - first_denomination(kinds_of_coins), 
+                    kinds_of_coins)
+    def first_denomination(kinds_of_coins):
+        if (kinds_of_coins == 1):
+            return 1
+        elif (kinds_of_coins == 2):
+            return 5
+        elif (kinds_of_coins == 3):
+            return 10
+        elif (kinds_of_coins == 4):
+            return 25
+        elif (kinds_of_coins == 5):
+            return 50
+    return cc(amount, 5)
+
+count_change(100)
+
+# ex.1.11
+def ex11_r(n):
+    if (n < 3):
+        return n
+    else:
+        return ex11_r(n - 1) + 2 * ex11_r(n - 2) + 3 * ex11_r(n - 3)
+
+ex11_r(3) # 1*2 + 2*1 + 3*0 = 4
+ex11_r(4) # 1*4 + 2*2 + 3*1 = 11
+ex11_r(5) # 1*11 + 2*4 + 3*2 = 25
+
+def ex11_i(n):
+    def ex11_iter(v1, v2, v3, count):
+        if (count < 3):
+            return v1
+        else:
+            return ex11_iter(1*v1 + 2*v2 + 3*v3, v1, v2, (count - 1))
+    if (n < 3):
+        return n
+    else:
+        return ex11_iter(2, 1, 0, n)
+
+[ex11_i(n) for n in range(10)]
+# [0, 1, 2, 4, 11, 25, 59, 142, 335, 796]
+
+# ex.1.12
+def pascal(n, k):
+    # calc Pascal's Triangle element of n-th row, k-th column
+    if (n == 1 or k == 1 or n == k):
+        return 1
+    else:
+        return pascal(n - 1, k - 1) + pascal(n - 1, k)
+
+[[pascal(n, k) for k in range(1, n + 1)] for n in range(1, 8 + 1)]
+
