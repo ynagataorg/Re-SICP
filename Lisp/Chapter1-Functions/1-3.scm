@@ -770,3 +770,35 @@ repeated
 ;    = (square (square 2^4))
 ;    = (square 2^8)
 ;    = 2^16
+
+; ex.1.44
+(define (smooth f dx)
+  (lambda (x) (/ (+ (f (- x dx))
+                    (f x)
+                    (f (+ x dx)))
+                 3)))
+smooth
+
+(define (n-fold-smooth f dx n)
+  (repeated (smooth f dx) n))
+n-fold-smooth
+
+(sin (/ pi 2))
+0.9999999999999466
+
+((smooth sin 0.5) (/ pi 2))
+0.9183883745935327
+
+((n-fold-smooth sin 0.5 2) (/ pi 2))
+0.729773656913086
+
+(map
+ (lambda (n)
+   ((n-fold-smooth sin 0.5 n) (/ pi 2)))
+ (iota 5 1))
+'(0.9183883745935327
+  0.729773656913086
+  0.6122904044263963
+  0.5278375479126715
+  0.4625613496467092)
+
