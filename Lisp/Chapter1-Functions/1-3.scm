@@ -646,3 +646,82 @@ tan-cf
 (tan-cf (/ pi 4) 10) ; tan(pi / 4) = 1
 0.9999996732051569
 
+; 1.3.4
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+average-damp
+
+((average-damp square) 10)
+55
+
+(define (my-sqrt x)
+  (fixed-point (average-damp (lambda (y) (/ x y)))
+               1.0))
+my-sqrt
+
+(my-sqrt 2e-10)
+1.4159184968008115e-005
+
+(define (my-cbrt x)
+  (fixed-point (average-damp (lambda (y) (/ x (square y))))
+               1.0))
+my-cbrt
+
+(my-cbrt 8e-15)
+2.0082480853390656e-005
+
+(define dx 1e-5)
+(define (deriv g)
+  (lambda (x) (/ (- (g (+ x dx)) (g x)) dx)))
+deriv
+
+((deriv cube) 5) ; D(x^3)=3*x^2, so D(x^3)(5)=3*5^2=75.
+75.00014999664018
+
+(define (newton-transform g)
+  (lambda (x) (- x (/ (g x) ((deriv g) x)))))
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+newtons-method
+
+(define (my-sqrt-newton x)
+  (newtons-method
+   (lambda (y) (- (square y) x)) 1.0))
+my-sqrt-newton
+
+(my-sqrt-newton 2e-10)
+1.4385662128249002e-005
+
+(define (fixed-point-of-transform g transform guess)
+  (fixed-point (transform g) guess))
+(define (sqrt1 x)
+  (fixed-point-of-transform
+   (lambda (y) (/ x y)) average-damp 1.0))
+(define (sqrt2 x)
+  (fixed-point-of-transform
+   (lambda (y) (- (square y) x)) newton-transform 1.0))
+
+(sqrt1 2)
+1.414213562373095
+
+(sqrt2 2)
+1.4142135623730951
+
+; ex.1.40
+(define (cubic a b c)
+  (lambda (x) (+ (cube x) (* a (square x)) (* b x) c)))
+(define (solve-cubic a b c)
+  (newtons-method (cubic a b c) 1))
+
+(solve-cubic 0 0 -8) ; (x-2)^3=0
+2.0
+
+(solve-cubic -3 1 -3) ; (x-3)(x^2+1)=0
+3.000000000000238
+
+(solve-cubic -4 -3 18) ; (x-3)^2(x+2)=0
+3.000002544856985
+
+(solve-cubic 4 -3 -18) ; (x+3)^2(x-2)=0
+2.000000000000059
+
