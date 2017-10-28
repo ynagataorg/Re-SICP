@@ -624,3 +624,25 @@ napier-by-cont-frac
 (map (lambda (k) (napier-by-cont-frac cont-frac-iterative k)) (iota 5 10))
 ;'(2.7182817182817183 2.7182818352059925 2.7182818229439496 2.718281828735696 2.7182818284454013)
 
+; ex.1.39
+(define (tan-cf x k)
+  (define (lambert-minus-xtanx)
+    (cont-frac-iterative (lambda (i) (* -1 x x))
+                         (lambda (i) (- (* 2 i) 1))
+                         k))
+  (if (= x 0)
+      0
+      (* -1 (/ (lambert-minus-xtanx) x))))
+tan-cf
+
+(define pi 3.141592)
+
+(tan-cf pi 10) ; tan(pi) = 0
+-6.554829992649349e-007
+
+(tan-cf (/ pi 2) 10) ; tan(pi / 2) = nan
+3060023.295435797
+
+(tan-cf (/ pi 4) 10) ; tan(pi / 4) = 1
+0.9999996732051569
+
