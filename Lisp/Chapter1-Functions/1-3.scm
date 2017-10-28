@@ -850,3 +850,37 @@ nth-root
 
 ;(map (lambda (n) (nth-root (expt 3 n) n)) (iota 100 1))
 
+; ex.1.46
+(define (iterative-improve good-enough? improve)
+  (define (try guess)
+    (let ((next (improve guess)))
+      (if (good-enough? guess next)
+          next
+          (try next))))
+  (lambda (guess) (try guess)))
+
+(define (my-sqrt-again x)
+  ((iterative-improve
+    (lambda (guess next)
+      (< (abs (/ (- next guess) next)) 0.001))
+   (lambda (guess)
+     (average guess (/ x guess))))
+   1.0))
+
+(my-sqrt-again 2)
+1.4142135623746899
+
+(define (fixed-point-again f first-guess)
+  ((iterative-improve
+    (lambda (guess next)
+      (< (abs (/ (- next guess) next)) 0.001))
+    f)
+   first-guess))
+
+(fixed-point-again cos 1.0)
+0.7393038923969059
+
+(define (sqrt-fixed-again x)
+  (fixed-point-again (lambda (y) (average y (/ x y))) 1.0))
+(sqrt-fixed-again 2)
+1.4142135623746899
