@@ -802,3 +802,51 @@ n-fold-smooth
   0.5278375479126715
   0.4625613496467092)
 
+; ex.1.45
+(define (try-2nd x)
+  (fixed-point (average-damp (lambda (y) (/ x y)))
+               1.0))
+(try-2nd 4)
+2.000000000000002
+
+(define (try-3rd x)
+  (fixed-point (average-damp (lambda (y) (/ x (expt y 2))))
+               1.0))
+(try-3rd 8)
+2.0000002271906077
+
+#|
+(define (try-4th-failed x)
+  (fixed-point (average-damp (lambda (y) (/ x (expt y 3))))
+               1.0))
+(try-4th-failed 16)
+|#
+
+(define (try-4th x)
+  (fixed-point
+   ((repeated average-damp
+              2)
+    (lambda (y) (/ x (expt y 3))))
+   1.0))
+(try-4th 16)
+2.0
+
+(define (nth-root x n)
+  (fixed-point
+   ((repeated average-damp
+              (floor (/ (log n) (log 2))))
+    (lambda (y) (/ x (expt y (- n 1)))))
+   1.0))
+nth-root
+
+(nth-root 3 1)
+2.9999990463256836
+
+(nth-root 9 2)
+3.0
+
+(nth-root 27 3)
+2.9999998270063113
+
+;(map (lambda (n) (nth-root (expt 3 n) n)) (iota 100 1))
+
