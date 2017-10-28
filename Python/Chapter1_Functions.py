@@ -214,10 +214,13 @@ def expt_i(base, n):
 expt_r(2, 10)
 expt_i(2, 10)
 
+def is_even(n):
+    return n % 2 == 0
+
 def fast_expt_r(base, n):
     if (n == 0):
         return 1
-    elif (n % 2 == 0):
+    elif is_even(n):
         return square(fast_expt_r(base, n / 2))
     else:
         return base * fast_expt_r(base, n - 1)
@@ -229,7 +232,7 @@ def fast_expt_i(base, n):
     def expt_iter(base, n, result):
         if (n == 0):
             return result
-        elif (n % 2 == 0):
+        elif is_even(n):
             return expt_iter(square(base), n / 2, result)
         else:
             return expt_iter(base, n - 1, base * result)
@@ -237,3 +240,32 @@ def fast_expt_i(base, n):
 
 fast_expt_i(2, 10)
 fast_expt_i(2, 100)
+
+# ex.1.17
+def double(n):
+    return n + n
+def halve(n):
+    return n / 2
+
+def mult_r(a, b):
+    if (b == 0):
+        return 0
+    elif is_even(b):
+        return double(mult_r(a, halve(b)))
+    else:
+        return a + mult_r(a, b - 1)
+
+mult_r(7, 143)
+
+# ex.1.18
+def mult_i(a, b):
+    def mult_iter(base, n, result):
+        if (n == 0):
+            return result
+        elif is_even(n):
+            return mult_iter(double(base), halve(n), result)
+        else:
+            return mult_iter(base, n - 1, base + result)
+    return mult_iter(a, b, 0)
+
+mult_i(7, 143)
