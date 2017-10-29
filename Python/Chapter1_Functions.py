@@ -295,3 +295,50 @@ fib_fast(10)
 354224848179261915075
 """
 
+# 1.2.5
+def gcd(m, n):
+    if (n == 0):
+        return m
+    else:
+        print('m =', m, '; n =', n)
+        return gcd(n, m % n)
+
+gcd(206, 40)
+
+# 1.2.6
+def smallest_divisor_(n):
+    def find_divisor(n, test):
+        if (square(test) > n):
+            return n
+        elif (n % test == 0):
+            return test
+        else:
+            return find_divisor(n, (test + 1))
+    return find_divisor(n, 2)
+
+def is_prime_(n):
+    return n == smallest_divisor_(n)
+
+# ex.1.21
+[is_prime_(n) for n in [199, 1999, 19999]]
+
+# ex.1.23
+def smallest_divisor(n):
+    def next(test):
+        if (test == 2):
+            return 3
+        else:
+            return test + 2
+    def find_divisor(n, test):
+        if (square(test) > n):
+            return n
+        elif (n % test == 0):
+            return test
+        else:
+            return find_divisor(n, next(test))
+    return find_divisor(n, 2)
+
+def is_prime(n):
+    return n == smallest_divisor(n)
+
+[is_prime(n) for n in [199, 1999, 19999]]
