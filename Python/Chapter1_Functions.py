@@ -269,3 +269,29 @@ def mult_i(a, b):
     return iter(a, b, 0)
 
 mult_i(7, 143)
+
+# ex.1.19
+def fib_fast(n):
+    def iter(a, b, p, q, count):
+        if (count == 0):
+            return b
+        elif (is_even(count)):
+            return iter(a, b,
+                        p * p + q * q,
+                        (2 * p + q) * q,
+                        count / 2)
+        else:
+            return iter(b * q + a * q + a * p,
+                        b * p + a * q,
+                        p, q, count - 1)
+    return iter(1, 0, 0, 1, n)
+
+fib_fast(10)
+
+"""
+>>> fib_fast(10)
+55
+>>> fib_fast(100)
+354224848179261915075
+"""
+
