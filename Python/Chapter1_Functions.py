@@ -39,12 +39,12 @@ def my_sqrt(x):
         return (x + y) / 2
     def improve(guess, x):
         return average(guess, (x / guess))
-    def sqrt_iter(guess, old, x):
+    def iter(guess, old, x):
         if (is_good_enough(guess, old)):
             return guess
         else:
-            return sqrt_iter(improve(guess, x), guess, x)
-    return sqrt_iter(1.0, x, x)
+            return iter(improve(guess, x), guess, x)
+    return iter(1.0, x, x)
 
 """
 >>> my_sqrt(2)
@@ -63,12 +63,12 @@ def my_cbrt(x):
         return (x + y) / 2
     def improve(guess, x):
         return average(guess, (x / guess ** 2 + 2 * guess) / 3)
-    def cbrt_iter(guess, old, x):
+    def iter(guess, old, x):
         if (is_good_enough(guess, old)):
             return guess
         else:
-            return cbrt_iter(improve(guess, x), guess, x)
-    return cbrt_iter(1.0, x, x)
+            return iter(improve(guess, x), guess, x)
+    return iter(1.0, x, x)
 
 """
 >>> my_cbrt(27)
@@ -91,12 +91,12 @@ factorial_r(6)
 
 def factorial_i(n):
     # calc n! by iterative-process.
-    def fact_iter(product, count):
+    def iter(product, count):
         if (count > n):
             return product
         else:
-            return fact_iter(count * product, count + 1)
-    return fact_iter(1, 1)
+            return iter(count * product, count + 1)
+    return iter(1, 1)
 
 factorial_i(6)
 
@@ -112,12 +112,12 @@ def fib_ugry(n):
 fib_ugry(10)
 
 def fib(n):
-    def fib_iter(a, b, count):
+    def iter(a, b, count):
         if (count == 0):
             return b
         else:
-            return fib_iter(a + b, a, count - 1)
-    return fib_iter(1, 0, n)
+            return iter(a + b, a, count - 1)
+    return iter(1, 0, n)
 
 fib(10)
 
@@ -158,15 +158,15 @@ ex11_r(4) # 1*4 + 2*2 + 3*1 = 11
 ex11_r(5) # 1*11 + 2*4 + 3*2 = 25
 
 def ex11_i(n):
-    def ex11_iter(v1, v2, v3, count):
+    def iter(v1, v2, v3, count):
         if (count < 3):
             return v1
         else:
-            return ex11_iter(1*v1 + 2*v2 + 3*v3, v1, v2, (count - 1))
+            return iter(1*v1 + 2*v2 + 3*v3, v1, v2, (count - 1))
     if (n < 3):
         return n
     else:
-        return ex11_iter(2, 1, 0, n)
+        return iter(2, 1, 0, n)
 
 [ex11_i(n) for n in range(10)]
 # [0, 1, 2, 4, 11, 25, 59, 142, 335, 796]
@@ -204,12 +204,12 @@ def expt_r(base, n):
         return base * expt_r(base, n-1)
 
 def expt_i(base, n):
-    def expt_iter(base, counter, product):
+    def iter(base, counter, product):
         if (counter == 0):
             return product
         else:
-            return expt_iter(base, counter - 1, base * product)
-    return expt_iter(base, n, 1)
+            return iter(base, counter - 1, base * product)
+    return iter(base, n, 1)
 
 expt_r(2, 10)
 expt_i(2, 10)
@@ -229,14 +229,14 @@ fast_expt_r(2, 10)
 
 # ex.1.16
 def fast_expt_i(base, n):
-    def expt_iter(base, n, result):
+    def iter(base, n, result):
         if (n == 0):
             return result
         elif is_even(n):
-            return expt_iter(square(base), n / 2, result)
+            return iter(square(base), n / 2, result)
         else:
-            return expt_iter(base, n - 1, base * result)
-    return expt_iter(base, n, 1)
+            return iter(base, n - 1, base * result)
+    return iter(base, n, 1)
 
 fast_expt_i(2, 10)
 fast_expt_i(2, 100)
@@ -259,13 +259,13 @@ mult_r(7, 143)
 
 # ex.1.18
 def mult_i(a, b):
-    def mult_iter(base, n, result):
+    def iter(base, n, result):
         if (n == 0):
             return result
         elif is_even(n):
-            return mult_iter(double(base), halve(n), result)
+            return iter(double(base), halve(n), result)
         else:
-            return mult_iter(base, n - 1, base + result)
-    return mult_iter(a, b, 0)
+            return iter(base, n - 1, base + result)
+    return iter(a, b, 0)
 
 mult_i(7, 143)
