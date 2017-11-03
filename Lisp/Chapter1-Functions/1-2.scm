@@ -107,12 +107,12 @@ calc-fn-i
 25
 
 ; ex.1.12
-(define (pascal m n)
-  (cond ((= m 1) 1)
-        ((= n 1) 1)
-        ((= n m) 1)
-        (else (+ (pascal (- m 1) (- n 1))
-                 (pascal (- m 1) n)))))
+(define (pascal n k)
+  (cond ((= n 1) 1)
+        ((= k 1) 1)
+        ((= n k) 1)
+        (else (+ (pascal (- n 1) (- k 1))
+                 (pascal (- n 1) k)))))
 pascal
 
 (pascal 3 2)
@@ -134,15 +134,15 @@ pascal
       (p (sine (/ angle 3.0)))))
 sine
 
-(sine 12) ; apply p 5 times.
+(sine 12.15) ; apply p 5 times.
 #|
-0.04938271604938271
-0.14766643898381945
-0.4301196273428894
-0.9720653790301994
--0.7578653335073415
+0.049999999999999996
+0.1495
+0.4351345505
+0.9758465331678772
+-0.7895631144708228
 |#
--0.5324462817995026
+-0.39980345741334
 
 (sine 3.14) ; apply p 4 times.
 #|
@@ -350,12 +350,12 @@ gcd-impl
   (find-divisor n 2))
 smallest-divisor_
 
-(define (prime? n)
+(define (prime?_ n)
   (= n (smallest-divisor_ n)))
-prime?
+prime?_
 
 ; ex.1.21
-(map prime? '(199 1999 19999))
+(map prime?_ '(199 1999 19999))
 '(#t #t #f)
 
 (smallest-divisor_ 19999)
@@ -363,7 +363,7 @@ prime?
 
 ; Carmichael numbers
 (define carmichaels '(561 1105 1729 2465 2821 6601))
-(map prime? carmichaels)
+(map prime?_ carmichaels)
 '(#f #f #f #f #f #f)
 
 ; Fermet Test
@@ -401,7 +401,7 @@ fermat-prime?
 (define (search-for-primes start counter)
   (define (search-iter n discovered counter)
     (cond ((= discovered counter) #t)
-          ((prime? n) (begin
+          ((prime?_ n) (begin
                         (printf "~A is prime.~%" n)
                         (search-iter (+ n 1) (+ discovered 1) counter)))
           (else (search-iter (+ n 1) discovered counter))))
