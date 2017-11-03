@@ -435,3 +435,49 @@ def is_prime_miller_rabin(n, times):
 
 [is_prime_miller_rabin(n, 10) for n in carmicaels]
 # [False, False, False, False, False, False]
+
+# 1.3.1
+def sum_recursive(term, a, next, b):
+    if a > b:
+        return 0
+    else:
+        return term(a) + sum_recursive(
+            term, next(a), next, b)
+
+def inc(n):
+    return n + 1
+
+def sum_cubes_r(a, b):
+    return sum_recursive(cube, a, inc, b)
+
+sum_cubes_r(1, 10)
+
+def identity(n):
+    return n
+
+def sum_integers(a, b):
+    return sum_recursive(identity, a, inc, b)
+
+sum_integers(1, 10)
+
+def pi_sum(a, b):
+    def pi_term(x):
+        return 1 / (x * (x + 2))
+    def pi_next(x):
+        return x + 4
+    return sum_recursive(pi_term, a, pi_next, b) * 8
+
+pi_sum(1, 1000)
+# 3.139592655589783
+
+def integral_r(f, a, b, dx):
+    def add_dx(x):
+        return x + dx
+    return sum_recursive(f, a + dx / 2, add_dx, b) * dx
+
+integral_r(cube, 0, 1, 1e-2)
+# 0.24998750000000042
+
+integral_r(cube, 0, 1, 2e-3)
+# 0.24999950000000098
+
