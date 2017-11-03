@@ -1,3 +1,5 @@
+import random
+
 # 1.1.1
 (3 * ((2 * 4) + (3 + 5))) + ((10 - 7) + 6)
 
@@ -342,3 +344,94 @@ def is_prime(n):
     return n == smallest_divisor(n)
 
 [is_prime(n) for n in [199, 1999, 19999]]
+
+# Fermet Test and Carmichael numbers
+carmicaels = [561, 1105, 1729, 2465, 2821, 6601]
+[is_prime(n) for n in carmicaels]
+
+def expmod(base, exp, m):
+    if (exp == 0):
+        return 1
+    elif (is_even(exp)):
+        return (square(expmod(base, exp / 2, m))) % m
+    else:
+        return (base * expmod(base, exp - 1, m)) % m
+
+def fermat_test(n):
+    def try_it(a):
+        return expmod(a, n, n) == a
+    return try_it(random.randint(1, n))
+
+def is_prime_fermat(n, times):
+    if (times == 0):
+        return True
+    elif fermat_test(n):
+        return is_prime_fermat(n, times - 1)
+    else:
+        return False
+
+[is_prime_fermat(n, 10) for n in [199, 1999, 19999]]
+[is_prime_fermat(n, 10) for n in carmicaels]
+
+# ex.1.27
+def fermat_test_all(n):
+    def try_it(a):
+        return expmod(a, n, n) == a
+    def iter(a):
+        if (n == 1):
+            return False
+        elif (a == n):
+            return True
+        elif (try_it(a)):
+            return iter(a + 1)
+        else:
+            return False
+    return iter(1)
+
+fermat_test_all(carmicaels[0])
+
+"""
+import sys
+sys.setrecursionlimit(2000)
+[fermat_test_all(n) for n in carmicaels[:3]]
+# [True, True, True]
+"""
+
+# ex.1.28
+def miller_rabin_test(n):
+    def square_with_check(x, m):
+        mx = square(x) % m
+        if (x == 1):
+            return mx
+        elif (x == m - 1):
+            return mx
+        elif (mx == 1):
+            return 0
+        else:
+            return mx
+    def expmod_with_check(base, exp, m):
+        if (exp == 0):
+            return 1
+        elif (is_even(exp)):
+            return square_with_check(expmod_with_check(
+                base, exp / 2, m), m)
+        else:
+            return base * expmod_with_check(
+                base, exp - 1, m) % m
+    def try_it(a):
+        return expmod_with_check(a, n, n) == a
+    return try_it(random.randint(1, n))
+
+def is_prime_miller_rabin(n, times):
+    if (times == 0):
+        return True
+    elif miller_rabin_test(n):
+        return is_prime_miller_rabin(n, times - 1)
+    else:
+        return False
+
+[is_prime_miller_rabin(n, 10) for n in [199, 1999, 19999]]
+# [True, True, False]
+
+[is_prime_miller_rabin(n, 10) for n in carmicaels]
+# [False, False, False, False, False, False]
