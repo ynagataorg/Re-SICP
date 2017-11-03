@@ -884,3 +884,57 @@ nth-root
   (fixed-point-again (lambda (y) (average y (/ x y))) 1.0))
 (sqrt-fixed-again 2)
 1.4142135623746899
+
+; ex.1.22
+(define (smallest-divisor_ n)
+  (define (divides? a b) (= (remainder b a) 0))
+  (define (find-divisor n d)
+    (cond ((> (* d d) n) n)
+          ((divides? d n) d)
+          (else (find-divisor n (+ d 1)))))
+  (find-divisor n 2))
+smallest-divisor_
+
+(define (prime?_ n)
+  (= n (smallest-divisor_ n)))
+prime?_
+
+(define (search-for-primes start counter prime-test times)
+  (define (runtime) (current-milliseconds))
+  (define (search-iter n discovered counter)
+    (cond ((= discovered counter) #t)
+          ((prime-test n)
+           (search-iter (+ n 1) (+ discovered 1) counter))
+          (else
+           (search-iter (+ n 1) discovered counter))))
+  (define (search-times n)
+    (if (= n times)
+        #t
+        (and (search-iter start 0 counter)
+             (search-times (+ n 1)))))
+  (let ((start-time (runtime)))
+      (search-times 0)
+      (printf "~Ams elapsed.~%" (- (runtime) start-time))))
+search-for-primes
+
+(search-for-primes 10000 10 prime?_ 100)
+;32ms elapsed.
+(search-for-primes 100000 10 prime?_ 100)
+;78ms elapsed.
+(search-for-primes 1000000 10 prime?_ 100)
+;141ms elapsed.
+(search-for-primes 10000000 10 prime?_ 100)
+;672ms elapsed.
+(search-for-primes 100000000 10 prime?_ 100)
+;1657ms elapsed.
+
+(search-for-primes 10000 10 prime? 100)
+;93ms elapsed.
+(search-for-primes 100000 10 prime? 100)
+;141ms elapsed.
+(search-for-primes 1000000 10 prime? 100)
+;171ms elapsed.
+(search-for-primes 10000000 10 prime? 100)
+;344ms elapsed.
+(search-for-primes 100000000 10 prime? 100)
+;375ms elapsed.
