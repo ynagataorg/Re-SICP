@@ -158,3 +158,29 @@
            (display x)
            (newline))
          (list 57 321 88))
+
+; 2.2.2
+(define x (cons (list 1 2) (list 3 4)))
+;> x
+;'((1 2) 3 4)
+
+(define (count-leaves tree)
+  (cond ((null? tree) 0)
+        ((not (pair? tree)) 1)
+        (else (+ (count-leaves (car tree))
+                 (count-leaves (cdr tree))))))
+
+(length x) ; 3
+(count-leaves x) ; 4
+(length (list x x)) ; 2
+(count-leaves (list x x)) ; 8
+
+; ex.2.25
+(car (cdr (car (cdr (cdr '(1 3 (5 7) 9))))))
+(car (car '((7))))
+(car (cdr ; removing 6
+  (car (cdr ; removing 5
+    (car (cdr ; removing 4
+      (car (cdr ; removing 3
+        (car (cdr ; removing 2
+          (car (cdr '(1 (2 (3 (4 (5 (6 7))))))))))))))))))
