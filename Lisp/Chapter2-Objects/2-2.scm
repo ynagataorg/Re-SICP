@@ -184,3 +184,53 @@
       (car (cdr ; removing 3
         (car (cdr ; removing 2
           (car (cdr '(1 (2 (3 (4 (5 (6 7))))))))))))))))))
+
+; ex.2.26
+(define ex26x (list 1 2 3))
+(define ex26y (list 4 5 6))
+(append ex26x ex26y)
+'(1 2 3 4 5 6)
+(cons ex26x ex26y)
+'((1 2 3) 4 5 6)
+(list ex26x ex26y)
+'((1 2 3) (4 5 6))
+
+; ex.2.27
+(define y (list (list 1 2) (list 3 4)))
+#|
+(define (reverse items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (car things) answer))))
+  (iter items '()))
+|#
+(define (deep-reverse items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (deep-reverse (car things)) answer))))
+  (if (pair? items)
+      (iter items '())
+      items))
+(reverse y)
+(deep-reverse y)
+
+; ex.2.28
+(define (fringe tree)
+  (define (iter things answer)
+    (cond ((null? things) answer)
+          ((not (pair? things))
+           (cons things answer))
+          (else
+           (iter (cdr things)
+                 (append (iter (car things) '()) answer)))))
+  ;(display "fringe")
+  ;(display tree)
+  ;(newline)
+  (reverse (iter tree '())))
+(fringe x)
+(fringe y)
+(fringe (list x x))
