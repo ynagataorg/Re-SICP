@@ -31,10 +31,10 @@
      (* (numer y) (denom x))))
 
 (define (print-rat x)
-  (newline)
   (display (numer x))
   (display "/")
-  (display (denom x)))
+  (display (denom x))
+  (newline))
 
 (define one-half (make-rat 1 2))
 (print-rat one-half)
@@ -48,3 +48,35 @@
 (print-rat (make-rat -1 2))
 (print-rat (make-rat 1 -2))
 (print-rat (sub-rat (make-rat 1 2) (make-rat 5 6)))
+
+; ex.2.2
+(define (make-segment ps pe) (cons ps pe))
+(define (start-segment s) (car s))
+(define (end-segment s) (cdr s))
+
+(define (make-point x y) (cons x y))
+(define (x-point p) (car p))
+(define (y-point p) (cdr p))
+
+(define (print-point p)
+  (display "(")
+  (display (x-point p))
+  (display ", ")
+  (display (y-point p))
+  (display ")")
+  (newline))
+
+(define (midpoint-segment s)
+  (let ((sp (start-segment s))
+        (ep (end-segment s)))
+  (define (average x y) (/ (+ x y) 2))
+  (make-point (average (x-point sp) (x-point ep))
+              (average (y-point sp) (y-point ep)))))
+midpoint-segment
+
+(define p1 (make-point -2 1))
+(define p2 (make-point 4 3))
+(define pm (midpoint-segment (make-segment p1 p2)))
+(print-point p1)
+(print-point p2)
+(print-point pm)
