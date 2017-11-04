@@ -160,3 +160,34 @@ midpoint-segment
 
 (carZ (consZ 3 4)) ; 3
 (cdrZ (consZ 3 4)) ; 4
+
+; ex.2.6
+; Thx to ja:Wikipedia ラムダ計算 and
+; [おとうさん、ぼくにもYコンビネータがわかりましたよ！ - きしだのはてな]
+; (http://d.hatena.ne.jp/nowokay/20090409#1239268405)
+(define zero
+  ; λfx.x
+  (lambda (f) (lambda (x) x)))
+(define (succ n)
+  ; λnfx.f(nfx)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+(define (toint n)
+  ((n (lambda (x) (+ x 1))) 0))
+(toint zero) ; 0
+(toint (succ zero)) ; 1
+
+(define one
+  ; λfx.f(x)
+  (lambda (f) (lambda (x) (f x))))
+(toint one) ; 1
+(define two
+  ; λfx.f(f(x))
+  (lambda (f) (lambda (x) (f (f x)))))
+(toint two) ; 2
+
+(define (plus m n)
+  ; λmnfx.mf(nfx)
+  (lambda (f) (lambda (x) ((m f) ((n f) x)))))
+(toint (plus one two)) ; 3 = 1 + 2
+(toint (plus two (plus one two))) ; 5 = 2 + (1 + 2)
