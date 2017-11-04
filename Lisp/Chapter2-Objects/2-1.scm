@@ -117,3 +117,46 @@ midpoint-segment
 8
 (calc-area2 r2)
 3
+
+; 2.1.3
+(define (consX x y)
+  (define (dispatch m)
+    (cond ((= m 0) x)
+          ((= m 1) y)
+          (else (error "Argument not 0 or 1: CONS" m))))
+  dispatch)
+(define (carX z) (z 0))
+(define (cdrX z) (z 1))
+
+(carX (consX 3 4)) ; 3
+(cdrX (consX 3 4)) ; 4
+
+; ex.2.4
+(define (consY x y)
+  (lambda (m) (m x y)))
+(define (carY z)
+  (z (lambda (p q) p)))
+(define (cdrY z)
+  (z (lambda (p q) q)))
+
+(carY (consY 3 4)) ; 3
+(cdrY (consY 3 4)) ; 4
+
+; ex.2.5
+(define (divides? a b) (= 0 (remainder b a)))
+(define (count-divisions n divisor)
+  (define (iter x count)
+    (if (divides? divisor x)
+        (iter (/ x divisor) (+ count 1))
+        count))
+  (iter n 0))
+
+(define (consZ a b)
+  (* (expt 2 a) (expt 3 b)))
+(define (carZ z)
+  (count-divisions z 2))
+(define (cdrZ z)
+  (count-divisions z 3))
+
+(carZ (consZ 3 4)) ; 3
+(cdrZ (consZ 3 4)) ; 4
