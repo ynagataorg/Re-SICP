@@ -267,3 +267,5 @@ midpoint-segment
 
 (cc 100 us-coins)
 292
+(cc 100 uk-coins)
+104561
