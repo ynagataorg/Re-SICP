@@ -80,3 +80,40 @@ midpoint-segment
 (print-point p1)
 (print-point p2)
 (print-point pm)
+
+; ex.2.3
+(define (make-rectangle1 p width height)
+  (cons p (cons width height)))
+(define (height-rect1 rect) (cdr (cdr rect)))
+(define (width-rect1 rect) (car (cdr rect)))
+
+(define (calc-circum1 rect)
+  (* 2 (+ (height-rect1 rect) (width-rect1 rect))))
+(define (calc-area1 rect)
+  (* (height-rect1 rect) (width-rect1 rect)))
+
+(define r1 (make-rectangle1 pm 3 1))
+(calc-circum1 r1)
+8
+(calc-area1 r1)
+3
+
+(define (make-rectangle2 left-bottom right-top)
+  (cons left-bottom right-top))
+(define (height-rect2 rect)
+  (abs (- (y-point (car rect))
+          (y-point (cdr rect)))))
+(define (width-rect2 rect)
+  (abs (- (x-point (car rect))
+          (x-point (cdr rect)))))
+
+(define (calc-circum2 rect)
+  (* 2 (+ (height-rect2 rect) (width-rect2 rect))))
+(define (calc-area2 rect)
+  (* (height-rect2 rect) (width-rect2 rect)))
+
+(define r2 (make-rectangle2 pm p2))
+(calc-circum2 r2)
+8
+(calc-area2 r2)
+3
