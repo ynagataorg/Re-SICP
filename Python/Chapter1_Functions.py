@@ -481,3 +481,30 @@ integral_r(cube, 0, 1, 1e-2)
 integral_r(cube, 0, 1, 2e-3)
 # 0.24999950000000098
 
+# ex.1.30
+def sum_iterative(term, a, next, b):
+    def iter(a, result):
+        if (a > b):
+            return result
+        else:
+            return iter(next(a), term(a) + result)
+    return iter(a, 0)
+
+def sum_cubes_i(a, b):
+    return sum_iterative(cube, a, inc, b)
+
+sum_cubes_i(1, 10)
+
+# ex.1.29
+def simpson(f, a, b, n):
+    h = (b - a) / n
+    def y(k):
+        return f(a + k * h)
+    def term(k):
+        coefficient = 1 if ((k == 0) or (k == n)) else 2 if (is_even(k)) else 4
+        return coefficient * y(k)
+    return (h / 3) * sum_iterative(term, 0, inc, n)
+
+simpson(cube, 0, 1, 10) # 0.25
+
+    
