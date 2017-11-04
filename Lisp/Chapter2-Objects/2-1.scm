@@ -267,5 +267,41 @@ midpoint-segment
 
 (cc 100 us-coins)
 292
-(cc 100 uk-coins)
-104561
+;(cc 100 uk-coins)
+;104561
+
+; ex.2.20
+(define (same-parity x . items)
+  (define (parity x) (remainder x 2))
+  (define (iter source result)
+    (if (null? source)
+        result
+        (if (= (parity (car source)) (parity x))
+            (iter (cdr source) (cons (car source) result))
+            (iter (cdr source) result))))
+  (cons x (reverse (iter items '()))))
+(same-parity 1 2 3 4 5 6 7)
+(same-parity 2 3 4 5 6 7)
+
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor))
+       items))
+(scale-list (list 1 2 3 4 5) 10)
+
+(map (lambda (x y) (+ x (* 2 y)))
+     (list 1 2 3)
+     (list 4 5 6))
+'(9 12 15)
+
+; ex.2.21
+(define (square x) (* x x))
+(define (square-list-raw items)
+  (if (null? items)
+      '()
+      (cons (square (car items))
+            (square-list-raw (cdr items)))))
+(square-list-raw (list 1 2 3 4))
+
+(define (square-list items)
+  (map (lambda (x) (square x)) items))
+(square-list (list 1 2 3 4))
