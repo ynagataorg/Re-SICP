@@ -238,11 +238,11 @@ midpoint-segment
 
 ; ex.2.18
 (define (reverse items)
-  (define (iter source result)
-    (if (null? source)
-        result
-        (iter (cdr source)
-              (cons (car source) result))))
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (car things) answer))))
   (iter items '()))
 (reverse squares)
 
@@ -273,13 +273,13 @@ midpoint-segment
 ; ex.2.20
 (define (same-parity x . items)
   (define (parity x) (remainder x 2))
-  (define (iter source result)
-    (if (null? source)
-        result
-        (if (= (parity (car source)) (parity x))
-            (iter (cdr source) (cons (car source) result))
-            (iter (cdr source) result))))
-  (cons x (reverse (iter items '()))))
+  (define (iter things answer)
+    (if (null? things)
+        (reverse answer)
+        (if (= (parity (car things)) (parity x))
+            (iter (cdr things) (cons (car things) answer))
+            (iter (cdr things) answer))))
+  (cons x (iter items '())))
 (same-parity 1 2 3 4 5 6 7)
 (same-parity 2 3 4 5 6 7)
 
@@ -305,3 +305,37 @@ midpoint-segment
 (define (square-list items)
   (map (lambda (x) (square x)) items))
 (square-list (list 1 2 3 4))
+
+; ex.2.22
+(define (square-list-iter1 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items '()))
+(square-list-iter1 (list 1 2 3 4))
+; '(16 9 4 1)
+
+(define (square-list-iter2 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square (car things))))))
+  (iter items '()))
+(square-list-iter2 (list 1 2 3 4))
+; '((((() . 1) . 4) . 9) . 16)
+
+(define (square-list-iter items)
+  (define (iter things answer)
+    (if (null? things)
+        (reverse answer)
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items '()))
+(square-list-iter (list 1 2 3 4))
+; '(1 4 9 16)
