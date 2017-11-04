@@ -2,10 +2,13 @@
 
 ; 2.1.1 Example: Arithmetic Operations for Rational Numbers
 
-(define (make-rat_ n d) (cons n d))
+(define (minus x) (* -1 x))
+
 (define (make-rat n d)
   (let ((g (gcd n d)))
-    (cons (/ n g) (/ d g))))
+    (if (> d 0)
+        (cons (/ n g) (/ d g))
+        (cons (/ (minus n) g) (/ (minus d) g)))))
 (define (numer x) (car x))
 (define (denom x) (cdr x))
 
@@ -41,3 +44,7 @@
 (print-rat (add-rat one-half one-third))
 (print-rat (mul-rat one-half one-third))
 (print-rat (add-rat one-third one-third))
+
+(print-rat (make-rat -1 2))
+(print-rat (make-rat 1 -2))
+(print-rat (sub-rat (make-rat 1 2) (make-rat 5 6)))
