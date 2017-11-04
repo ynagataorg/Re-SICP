@@ -339,3 +339,14 @@ midpoint-segment
   (iter items '()))
 (square-list-iter (list 1 2 3 4))
 ; '(1 4 9 16)
+
+; ex.2.23
+(define (foreach action items)
+  (if (null? items)
+      #t
+      (and (action (car items))
+           (foreach action (cdr items)))))
+(foreach (lambda (x)
+           (display x)
+           (newline))
+         (list 57 321 88))
