@@ -220,17 +220,10 @@
 
 ; ex.2.28
 (define (fringe tree)
-  (define (iter things answer)
-    (cond ((null? things) answer)
-          ((not (pair? things))
-           (cons things answer))
-          (else
-           (iter (cdr things)
-                 (append (iter (car things) '()) answer)))))
-  ;(display "fringe")
-  ;(display tree)
-  ;(newline)
-  (reverse (iter tree '())))
+  (cond ((null? tree) '())
+        ((not (pair? tree)) (list tree))
+        (else (append (fringe (car tree))
+                      (fringe (cdr tree))))))
 (fringe x)
 (fringe y)
 (fringe (list x x))
