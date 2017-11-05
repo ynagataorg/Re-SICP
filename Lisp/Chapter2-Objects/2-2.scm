@@ -349,3 +349,18 @@
 (scale-tree3 t 10)
 (square-tree3 t)
 
+; ex.2.32
+(define (subsets s)
+  (if (null? s)
+      (list '())
+      (let ((rest (subsets (cdr s))))
+        ; append "without (car s)" and "with (car s)".
+        (append rest
+                (map (lambda (x)
+                       (cons (car s) x))
+                     rest)))))
+
+(subsets '())
+(subsets '(1))
+(subsets '(1 2))
+(subsets '(1 2 3))
