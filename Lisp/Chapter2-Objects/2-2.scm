@@ -207,15 +207,12 @@
   (iter items '()))
 |#
 (define (deep-reverse items)
-  (define (iter things answer)
-    (if (null? things)
-        answer
-        (iter (cdr things)
-              (cons (deep-reverse (car things)) answer))))
-  (if (pair? items)
-      (iter items '())
-      items))
+  (cond ((null? items) '())
+        ((not (pair? items)) items)
+        (else (append (deep-reverse (cdr items))
+                      (list (deep-reverse (car items)))))))
 (reverse y)
+(deep-reverse x)
 (deep-reverse y)
 
 ; ex.2.28
