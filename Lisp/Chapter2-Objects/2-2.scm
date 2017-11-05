@@ -289,14 +289,63 @@
 (define (balanced? mobile)
   (if (not (mobile? mobile))
       #t
-      (let ((left-mobile (branch-structure (left-branch mobile)))
-            (right-mobile (branch-structure (right-branch mobile))))
-        (and (= (* (branch-length (left-branch mobile))
-                   (total-weight left-mobile))
-                (* (branch-length (right-branch mobile))
-                   (total-weight right-mobile)))
-             (balanced? left-mobile)
-             (balanced? right-mobile)))))
+      (let ((lbranch (left-branch mobile))
+            (rbranch (right-branch mobile))
+            (lmobile (branch-structure (left-branch mobile)))
+            (rmobile (branch-structure (right-branch mobile))))
+        (and (= (* (branch-length lbranch)
+                   (total-weight lmobile))
+                (* (branch-length rbranch)
+                   (total-weight rmobile)))
+             (balanced? lmobile)
+             (balanced? rmobile)))))
 (balanced? m1) ; #t
 (balanced? m2) ; #t
 (balanced? m3) ; #f
+
+(define t (list 1 (list 2 (list 3 4) 5) (list 6 7)))
+(define (scale-tree tree factor)
+  (cond ((null? tree) '())
+        ((not (pair? tree)) (* tree factor))
+        (else (cons (scale-tree (car tree) factor)
+                    (scale-tree (cdr tree) factor)))))
+(scale-tree t 10)
+
+(define (scale-tree2 tree factor)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (scale-tree2 sub-tree factor)
+             (* sub-tree factor)))
+       tree))
+(scale-tree2 t 10)
+
+; ex.2.30
+(define (square-tree tree)
+  (cond ((null? tree) '())
+        ((not (pair? tree)) (square tree))
+        (else (cons (square-tree (car tree))
+                    (square-tree (cdr tree))))))
+(square-tree t)
+
+(define (square-tree2 tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (square-tree2 sub-tree)
+             (square sub-tree)))
+       tree))
+(square-tree2 t)
+
+; ex.2.31
+(define (tree-map f tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (tree-map f sub-tree)
+             (f sub-tree)))
+       tree))
+
+(define (scale-tree3 tree factor)
+  (tree-map (lambda (x) (* x factor)) tree))
+(define (square-tree3 tree) (tree-map square tree))
+(scale-tree3 t 10)
+(square-tree3 t)
+
