@@ -440,3 +440,46 @@
               (map (lambda x 1) (enumerate-tree t))))
 (acc-count-leaves t)
 7
+
+; ex.2.36
+(define ma (list (list 1 2 3) (list 4 5 6) (list 7 8 9) (list 10 11 12)))
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+(accumulate-n + 0 ma)
+'(22 26 30)
+
+; ex.2.37
+(define mb (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
+(define i3 (list (list 1 0 0) (list 0 1 0) (list 0 0 1)))
+(define i4 (list (list 1 0 0 0) (list 0 1 0 0) (list 0 0 1 0) (list 0 0 0 1)))
+(define (dot-product v w)
+  ; returns sigma_i v_i * w_i
+  (accumulate + 0 (map * v w)))
+(define (matrix-*-vector m v)
+  ; returns t_i = sigma_j m_ij * v_j
+  (map (lambda (w) (dot-product w v)) m))
+(define (transpose mat)
+  (accumulate-n cons '() mat))
+(define (matrix-*-matrix m n)
+  ; returns p_ij = sigma_k m_ik * n_kj
+  (let ((n-cols (transpose n)))
+    (map (lambda (m-row) (matrix-*-vector n-cols m-row)) m)))
+
+(dot-product (car mb) (list 1 1 1 1))
+10
+(matrix-*-vector mb (list 1 1 1 1))
+'(10 21 30)
+ma
+(transpose ma)
+mb
+(transpose mb)
+(matrix-*-matrix i3 i3)
+(matrix-*-matrix i4 i4)
+(matrix-*-matrix ma i3)
+(matrix-*-matrix i4 ma)
+(matrix-*-matrix ma mb)
+(matrix-*-matrix mb ma)
