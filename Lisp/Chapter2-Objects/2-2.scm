@@ -354,3 +354,89 @@
 (subsets '(1))
 (subsets '(1 2))
 (subsets '(1 2 3))
+
+; 2.2.3
+(define (fib n)
+  (define (fib-iter a b counter)
+    (if (= counter 0)
+        b
+        (fib-iter (+ a b) a (- counter 1))))
+  (fib-iter 1 0 n))
+
+(define (filter predicate sequence)
+  (cond ((null? sequence) '())
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))))
+        (else (filter predicate (cdr sequence)))))
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (enumerate-tree tree)
+  (fringe tree))
+
+(define (sum-odd-squares tree)
+  (accumulate + 0
+              (map square (filter odd? (enumerate-tree tree)))))
+
+(define (even-fibs n)
+  (accumulate cons '()
+              (filter even? (map fib (enumerate-interval 0 n)))))
+
+; t is '(1 (2 (3 4) 5) (6 7)).
+(sum-odd-squares t)
+84 ; returns 1 + 9 + 25 + 49 = 84.
+
+(even-fibs 10)
+'(0 2 8 34)
+
+(define (list-fib-squares n)
+  (accumulate cons '()
+              (map square (map fib (enumerate-interval 0 n)))))
+(list-fib-squares 10)
+'(0 1 1 4 9 25 64 169 441 1156 3025)
+
+(define (product-of-squares-of-odd-elements sequence)
+  (accumulate * 1
+              (map square (filter odd? sequence))))
+(product-of-squares-of-odd-elements (enumerate-interval 1 5))
+225
+
+; ex.2.33.
+(define (acc-map p sequence)
+  (accumulate (lambda (x y) (cons (p x) y))
+              '() sequence))
+(acc-map square (enumerate-interval 1 5))
+
+(define (acc-append seq1 seq2)
+  (accumulate cons seq2 seq1))
+(acc-append (list 1 2 3) (list 4 5 6))
+
+(define (acc-length sequence)
+  (accumulate (lambda (x y) (+ y 1))
+              0 sequence))
+(acc-length (enumerate-interval 1 5))
+
+; ex.2.34.
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-terms) (+ this-coeff (* higher-terms x)))
+              0 coefficient-sequence))
+
+(horner-eval 2 (list 1 3 0 5 0 1))
+79 ; returns 1 + 3*2 + 0*4 + 5*8 + 0*16 + 1*32 = 1 + 6 + 40 + 32 = 79.
+
+; ex.2.35.
+(define (acc-count-leaves t)
+  (accumulate + 0
+              (map (lambda x 1) (enumerate-tree t))))
+(acc-count-leaves t)
+7
