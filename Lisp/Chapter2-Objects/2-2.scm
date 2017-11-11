@@ -532,3 +532,37 @@
 (180,	210,	240,	)
 |#
 
+; ex.2.38.
+(define fold-right accumulate)
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
+
+(fold-right / 1 (list 1 2 3))
+; 1 1/2
+(fold-left / 1 (list 1 2 3))
+; 1/6
+(fold-right list '() (list 1 2 3))
+; '(1 (2 (3 ())))
+(fold-left list '() (list 1 2 3))
+; '(((() 1) 2) 3)
+(fold-right + 0 (list 1 2 3 4))
+(fold-left + 0 (list 1 2 3 4))
+(fold-right * 1 (list 1 2 3 4))
+(fold-left * 1 (list 1 2 3 4))
+; fold-right = fold-left forall sequence
+; when (= (op x y) (op y x)) forall x, y.
+
+; ex.2.39.
+(define (reverse-right sequence)
+  (fold-right (lambda (x y) (append y (list x)))
+              '() sequence))
+(define (reverse-left sequence)
+  (fold-left (lambda (x y) (cons y x))
+             '() sequence))
+(reverse-right (list 1 2 3))
+(reverse-left (list 1 2 3))
