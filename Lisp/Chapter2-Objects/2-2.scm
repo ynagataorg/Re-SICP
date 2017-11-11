@@ -571,6 +571,7 @@
   (accumulate append '() (map proc seq)))
 
 (require "../prime.scm")
+#|
 (define (prime-sum-pairs n)
   (define (prime-sum? pair)
     (prime? (+ (car pair) (cadr pair))))
@@ -586,6 +587,7 @@
 
 (prime-sum-pairs 6)
 '((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))
+|#
 
 (define (permutations seq)
   (define (remove item sequence)
@@ -600,3 +602,29 @@
 
 (permutations (list 1 2 3))
 '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
+
+; ex.2.40.
+(define (unique-pairs n)
+  ; returns pair (i, j) (1 <= j < i <= n).
+  (flatmap
+   (lambda (i)
+     (map (lambda (j) (list i j))
+          (enumerate-interval 1 (- i 1))))
+   (enumerate-interval 1 n)))
+(map unique-pairs (enumerate-interval 1 5))
+#|
+'(()
+  ((2 1))
+  ((2 1) (3 1) (3 2))
+  ((2 1) (3 1) (3 2) (4 1) (4 2) (4 3))
+  ((2 1) (3 1) (3 2) (4 1) (4 2) (4 3) (5 1) (5 2) (5 3) (5 4)))
+|#
+
+(define (prime-sum-pairs n)
+  (define (prime-sum? pair)
+    (prime? (+ (car pair) (cadr pair))))
+  (define (make-pair-sum pair)
+    (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+  (map make-pair-sum
+       (filter prime-sum? (unique-pairs n))))
+(prime-sum-pairs 6)
