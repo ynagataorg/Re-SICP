@@ -293,32 +293,7 @@ factorial-with-accumulate-i
 3628800
 
 ; ex.1.33 (filtered-accumulate)
-(define (miller-rabin-test n)
-  (define (square-with-check x m)
-    (let ((mx (remainder (square x) m)))
-      (cond ((= x 1) mx)
-            ((= x (- m 1)) mx)
-            ((= mx 1) 0)
-            (else mx))))
-  (define (expmod-with-check base e m)
-    (cond ((= e 0) 1)
-          ((even? e)
-           (square-with-check (expmod-with-check base (/ e 2) m) m))
-          (else
-           (remainder
-            (* base (expmod-with-check base (- e 1) m))
-            m))))
-  (define (try-it a)
-    (= (expmod-with-check a n n) a))
-  (try-it (+ 1 (random (- n 1)))))
-miller-rabin-test
-
-(define (prime? n (times 10))
-  (cond ((< n 2) #f)
-        ((= times 0) #t)
-        ((miller-rabin-test n) (prime? n (- times 1)))
-        (else #f)))
-prime?
+(require "../prime.scm")
 
 (define (gcd-impl a b)
   (if (= b 0)
