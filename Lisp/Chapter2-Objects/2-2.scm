@@ -454,6 +454,17 @@
 
 ; ex.2.37
 (define mb (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
+(define (display-matrix m)
+  (for-each (lambda (row)
+              (display "(")
+              (for-each (lambda (coeff)
+                          (display coeff)
+                          (display ",\t"))
+                        row)
+              (display ")")
+              (newline))
+            m))
+
 (define i3 (list (list 1 0 0) (list 0 1 0) (list 0 0 1)))
 (define i4 (list (list 1 0 0 0) (list 0 1 0 0) (list 0 0 1 0) (list 0 0 0 1)))
 (define (dot-product v w)
@@ -473,13 +484,51 @@
 10
 (matrix-*-vector mb (list 1 1 1 1))
 '(10 21 30)
-ma
-(transpose ma)
-mb
-(transpose mb)
-(matrix-*-matrix i3 i3)
-(matrix-*-matrix i4 i4)
-(matrix-*-matrix ma i3)
-(matrix-*-matrix i4 ma)
-(matrix-*-matrix ma mb)
-(matrix-*-matrix mb ma)
+
+(display-matrix ma)
+#|
+(1,	2,	3,	)
+(4,	5,	6,	)
+(7,	8,	9,	)
+(10,	11,	12,	)
+|#
+(display-matrix (transpose ma))
+#|
+(1,	4,	7,	10,	)
+(2,	5,	8,	11,	)
+(3,	6,	9,	12,	)
+|#
+(display-matrix mb)
+#|
+(1,	2,	3,	4,	)
+(4,	5,	6,	6,	)
+(6,	7,	8,	9,	)
+|#
+(display-matrix (transpose mb))
+#|
+(1,	4,	6,	)
+(2,	5,	7,	)
+(3,	6,	8,	)
+(4,	6,	9,	)
+|#
+
+(display-matrix (matrix-*-matrix i3 i3))
+(display-matrix (matrix-*-matrix i4 i4))
+(display-matrix (matrix-*-matrix ma i3))
+(display-matrix (matrix-*-matrix i4 ma))
+
+(display-matrix (matrix-*-matrix ma mb))
+#|
+(27,	33,	39,	43,	)
+(60,	75,	90,	100,	)
+(93,	117,	141,	157,	)
+(126,	159,	192,	214,	)
+|#
+
+(display-matrix (matrix-*-matrix mb ma))
+#|
+(70,	80,	90,	)
+(126,	147,	168,	)
+(180,	210,	240,	)
+|#
+
