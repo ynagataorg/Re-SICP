@@ -460,25 +460,25 @@ def sum_integers(a, b):
 
 sum_integers(1, 10)
 
-def pi_sum(a, b):
+def pi_sum_(a, b):
     def pi_term(x):
         return 1 / (x * (x + 2))
     def pi_next(x):
         return x + 4
     return sum_recursive(pi_term, a, pi_next, b) * 8
 
-pi_sum(1, 1000)
+pi_sum_(1, 1000)
 # 3.139592655589783
 
-def integral_r(f, a, b, dx):
+def integral_(f, a, b, dx):
     def add_dx(x):
         return x + dx
     return sum_recursive(f, a + dx / 2, add_dx, b) * dx
 
-integral_r(cube, 0, 1, 1e-2)
+integral_(cube, 0, 1, 1e-2)
 # 0.24998750000000042
 
-integral_r(cube, 0, 1, 2e-3)
+integral_(cube, 0, 1, 2e-3)
 # 0.24999950000000098
 
 # ex.1.30
@@ -596,3 +596,39 @@ def ex_1_33_b(n):
     return filtered_accumulate(
         mult, 1, identity, 1, inc, n, is_relatively_prime_to_n)
 ex_1_33_b(8) == 3 * 5 * 7
+
+# 1.3.2
+def pi_sum(a, b):
+    return 8 * sum_recursive(
+        lambda x : 1 / (x * (x + 2)),
+        a,
+        lambda x : x + 4,
+        b)
+
+pi_sum(1, 1000)
+# 3.139592655589783
+
+def integral(f, a, b, dx):
+    return sum_recursive(
+        f, a + dx / 2, lambda x : x + dx, b) * dx
+
+integral(cube, 0, 1, 1/999)
+# 0.24999950000000098
+
+# ex.1.34
+def f(g):
+    return g(2)
+
+"""
+>>> f(square)
+4
+>>> f(lambda z : z * (z + 1))
+6
+>>> f(f)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 2, in f
+  File "<stdin>", line 2, in f
+TypeError: 'int' object is not callable
+"""
+
