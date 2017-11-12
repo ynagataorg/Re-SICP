@@ -606,9 +606,8 @@
 ; ex.2.40.
 (define (unique-pairs n)
   ; returns pair (i, j) (1 <= j < i <= n).
-  (flatmap
-   (lambda (i)
-     (map (lambda (j) (list i j))
+  (flatmap (lambda (i)
+             (map (lambda (j) (list i j))
           (enumerate-interval 1 (- i 1))))
    (enumerate-interval 1 n)))
 (map unique-pairs (enumerate-interval 1 5))
@@ -628,3 +627,21 @@
   (map make-pair-sum
        (filter prime-sum? (unique-pairs n))))
 (prime-sum-pairs 6)
+
+; ex.2.41.
+(define (unique-triplets n)
+  ; returns pair (i, j, k) (1 <= k < j < i <= n).
+  (flatmap (lambda (i)
+             (flatmap (lambda (j)
+                        (map (lambda (k) (list i j k))
+                             (enumerate-interval 1 (- j 1))))
+                      (enumerate-interval 1 (- i 1))))
+           (enumerate-interval 1 n)))
+(map unique-triplets (enumerate-interval 1 5))
+
+(define (make-triplets-sum n s)
+  ; returns pair (i, j, k) (1 <= k < j < i <= n, i + j + k = s).
+  (filter (lambda (t) (= (+ (car t) (cadr t) (caddr t)) s))
+          (unique-triplets n)))
+(map (lambda (s) (make-triplets-sum 5 s)) (enumerate-interval 6 12))
+(map (lambda (s) (make-triplets-sum 6 s)) (enumerate-interval 6 15))
