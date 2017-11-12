@@ -302,7 +302,7 @@ def gcd(m, n):
     if (n == 0):
         return m
     else:
-        print('m =', m, '; n =', n)
+        #print('m =', m, '; n =', n)
         return gcd(n, m % n)
 
 gcd(206, 40)
@@ -341,7 +341,7 @@ def smallest_divisor(n):
     return find_divisor(n, 2)
 
 def is_prime(n):
-    return n == smallest_divisor(n)
+    return n != 1 and n == smallest_divisor(n)
 
 [is_prime(n) for n in [199, 1999, 19999]]
 
@@ -507,4 +507,92 @@ def simpson(f, a, b, n):
 
 simpson(cube, 0, 1, 10) # 0.25
 
-    
+# ex.1.31
+def product_recursive(term, a, next, b):
+    if a > b:
+        return 1
+    else:
+        return term(a) * product_recursive(
+            term, next(a), next, b)
+
+def product_iterative(term, a, next, b):
+    def iter(a, result):
+        if (a > b):
+            return result
+        else:
+            return iter(next(a), term(a) * result)
+    return iter(a, 1)
+
+product_recursive(identity, 1, inc, 10)
+product_iterative(identity, 1, inc, 10)
+
+def john_wallis_method(upper):
+    def term(k):
+        doublek = 2 * k
+        denom = doublek * (doublek + 2)
+        numer = (doublek + 1) * (doublek + 1)
+        return denom / numer
+    return 4 * product_iterative(term, 1, inc, upper)
+
+for upper in [2**e for e in range(10)]:
+    print(upper, john_wallis_method(upper))
+
+# ex.1.32.
+def plus(x, y):
+    return x + y
+def mult(x, y):
+    return x * y
+
+def accumulate_recursive(combiner, initial, term, a, next, b):
+    if a > b:
+        return initial
+    else:
+        return combiner(term(a), accumulate_recursive(
+            combiner, initial, term, next(a), next, b))
+def accumulate_iterative(combiner, initial, term, a, next, b):
+    def iter(a, result):
+        if (a > b):
+            return result
+        else:
+            return iter(next(a), combiner(term(a), result))
+    return iter(a, initial)
+
+def acc_sum(term, a, next, b):
+    return accumulate_recursive(plus, 0, term, a, next, b)
+def acc_product(term, a, next, b):
+    return accumulate_recursive(mult, 1, term, a, next, b)
+
+def acc_pi_sum(a, b):
+    return 8 * acc_sum(
+        lambda x : 1 / (x * (x + 2)), a,
+        lambda x : x + 4, b)
+[acc_pi_sum(1, to) for to in [10, 100, 1000]]
+# [2.976046176046176, 3.1215946525910105, 3.139592655589783]
+
+def acc_fact(n):
+    return acc_product(identity, 1, inc, n)
+[acc_fact(n) for n in range(11)]
+# [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800]
+
+# ex.1.33.
+def filtered_accumulate(combiner, initial, term, a, next, b, predicate):
+    def iter(a, result):
+        if (a > b):
+            return result
+        elif predicate(a):
+            return iter(next(a), combiner(term(a), result))
+        else:
+            return iter(next(a), result)
+    return iter(a, initial)
+
+def ex_1_33_a(a, b):
+    return filtered_accumulate(
+        plus, 0, square, a, inc, b, is_prime)
+ex_1_33_a(1, 10) == sum(map(square, [2, 3, 5, 7]))
+
+def ex_1_33_b(n):
+    def is_relatively_prime_to_n(m):
+        return gcd(m, n) == 1
+    return filtered_accumulate(
+        mult, 1, identity, 1, inc, n, is_relatively_prime_to_n)
+ex_1_33_b(8) == 3 * 5 * 7
