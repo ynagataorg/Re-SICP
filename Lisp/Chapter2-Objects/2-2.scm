@@ -645,3 +645,75 @@
           (unique-triplets n)))
 (map (lambda (s) (make-triplets-sum 5 s)) (enumerate-interval 6 12))
 (map (lambda (s) (make-triplets-sum 6 s)) (enumerate-interval 6 15))
+
+; ex.2.42.
+#|
+Thx to:
+* [Exercise 2.42 – SICP exercises]
+  (https://wizardbook.wordpress.com/2010/12/03/exercise-2-42/)
+* [エイト・クイーン - Wikipedia]
+  (https://ja.wikipedia.org/wiki/%E3%82%A8%E3%82%A4%E3%83%88%E3%83%BB%E3%82%AF%E3%82%A4%E3%83%BC%E3%83%B3#n-.E3.82.AF.E3.82.A4.E3.83.BC.E3.83.B3)
+|#
+(define (queens board-size)
+  (define empty-board '())
+  (define (adjoin-position new-row k rest-of-queens)
+    (cons new-row rest-of-queens))
+  (define (safe-horizontal? k positions)
+    ; (car position) is newly queen : on col-1.
+    ; (cdr position) is other queens: on col-2, 3, ..., k.
+    ; so safe-horitontal? = car-elem is not in cdr-elem.
+    (not (member (car positions) (cdr positions))))
+  (define (safe-diagonal? k positions)
+    ; for example, (safe-diagonal? 3 '(2 3 1)) implies
+    ; (a) newly queen is 2
+    ; (b) length of position is k=3;
+    ; (c) (cdr '(2 3 1)) is safe.
+    (define (safe-diagonal-iter newly older col)
+      (cond ((null? older)
+             ;(display k)
+             ;(display positions)
+             ;(newline)
+             #t)
+            ((= (abs (- newly (car older)))
+                (abs (- 1 col))) #f)
+            (else (safe-diagonal-iter
+                   newly (cdr older) (+ col 1)))))
+    (safe-diagonal-iter (car positions) (cdr positions) 2))
+  (define (safe? k positions)
+    (and (safe-horizontal? k positions)
+         (safe-diagonal? k positions)))
+  (define (queen-cols k)
+    ; returns all paterns of first k-columns.
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position
+                    new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+(queens 1)
+
+(queens 2)
+
+(queens 3)
+
+(queens 4)
+
+(queens 5)
+
+(queens 6)
+
+(= (length (queens 6)) 4)
+(= (length (queens 7)) 40)
+(= (length (queens 8)) 92)
+
+; On my computer with DrRacket:
+; (queens 12) required about 30 sec, memory <= 256MB.
+; (queens 13) required about 2+ min, memory <= 2048MB.
+; (queens 14) cannot eval.
