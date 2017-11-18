@@ -718,3 +718,30 @@ fixed_point_with_print(lambda x : log(1000) / log(x), 10)
 
 fixed_point_with_print(lambda x : average(x, log(1000) / log(x)), 10)
 # try_it(guess) called 11 times.
+
+# ex.1.37
+def cont_frac_recursive(numer, denom, terms):
+    def iter(i):
+        if i > terms:
+            return 0
+        else:
+            return numer(i) / (denom(i) + iter(i + 1))
+    return iter(1)
+
+def cont_phi_recursive(k):
+    return 1 / cont_frac_recursive(lambda n : 1, lambda d : 1, k)
+
+def cont_frac_iterative(numer, denom, terms):
+    def iter(i, result):
+        if (i == 0):
+            return result
+        else:
+            return iter(i - 1, numer(i) / (denom(i) + result))
+    return iter(terms, 0)
+
+def cont_phi_iterative(k):
+    return 1 / cont_frac_iterative(lambda n : 1, lambda d : 1, k)
+
+for k in range(1, 20 + 1):
+    print(k, cont_phi_recursive(k), cont_phi_iterative(k))
+
