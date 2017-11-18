@@ -189,7 +189,7 @@ def cube(x):
 
 def sine(angle):
     def p(x):
-        print('p: ', angle)
+        #print('p: ', angle)
         return (3*x - 4*cube(x))
     if (not (abs(angle) > 0.1)):
         return angle
@@ -612,7 +612,7 @@ def integral(f, a, b, dx):
     return sum_recursive(
         f, a + dx / 2, lambda x : x + dx, b) * dx
 
-integral(cube, 0, 1, 1/999)
+integral(cube, 0, 1, 2e-3)
 # 0.24999950000000098
 
 # ex.1.34
@@ -632,3 +632,89 @@ Traceback (most recent call last):
 TypeError: 'int' object is not callable
 """
 
+# 1.3.3
+def search(f, neg_point, pos_point):
+    def is_close_enough(x, y):
+        return abs(x - y) < 1e-6
+    mid_point = (neg_point + pos_point) / 2
+    if is_close_enough(neg_point, pos_point):
+        return mid_point
+    value_mid = f(mid_point)
+    if (value_mid > 0):
+        return search(f, neg_point, mid_point)
+    elif (value_mid < 0):
+        return search(f, mid_point, pos_point)
+    else:
+        return mid_point
+
+def half_interval_method(f, a, b):
+    value_a = f(a)
+    value_b = f(b)
+    if (value_a < 0 and 0 < value_b):
+        return search(f, a, b)
+    elif (value_b < 0 and 0 < value_a):
+        return search(f, b, a)
+    else:
+        raise ValueError("Values are not of opposite sign", a, b)
+
+half_interval_method(sine, 2, 4) # sine is defined by ex.1.15
+# 3.1408047676086426
+
+from math import *
+half_interval_method(sin, 2, 4)
+# 3.141592502593994
+
+half_interval_method(lambda x : x ** 3 - 2 * x - 3, 1, 2)
+# 1.8932890892028809
+
+def fixed_point(f, first_guess):
+    def is_close_enough(x, y):
+        return abs(x - y) < 1e-6
+    def try_it(guess):
+        next = f(guess)
+        if (is_close_enough(guess, next)):
+            return next
+        else:
+            return try_it(next)
+    return try_it(first_guess)
+
+fixed_point(cos, 1)
+# 0.7390855263619245
+
+fixed_point(lambda y : sin(y) + cos(y), 1)
+# 1.2587277968014188
+
+def average(x, y):
+    return (x + y) / 2
+
+def fixed_sqrt(x):
+    return fixed_point(lambda y : average(y, x / y), 1)
+
+[fixed_sqrt(x) for x in [2, 3, 5]]
+# [1.414213562373095, 1.7320508075688772, 2.236067977499978]
+
+# ex.1.35
+def fixed_phi():
+    return fixed_point(lambda x : average(x, 1 + 1 / x), 1)
+
+fixed_phi()
+# 1.6180337185494662
+
+# ex.1.36
+def fixed_point_with_print(f, first_guess):
+    def is_close_enough(x, y):
+        return abs(x - y) < 1e-6
+    def try_it(guess):
+        next = f(guess)
+        print("guess: ", guess, "next: ", next)
+        if (is_close_enough(guess, next)):
+            return next
+        else:
+            return try_it(next)
+    return try_it(first_guess)
+
+fixed_point_with_print(lambda x : log(1000) / log(x), 10)
+# try_it(guess) called 39 times.
+
+fixed_point_with_print(lambda x : average(x, log(1000) / log(x)), 10)
+# try_it(guess) called 11 times.
