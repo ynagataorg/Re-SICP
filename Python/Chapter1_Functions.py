@@ -728,9 +728,6 @@ def cont_frac_recursive(numer, denom, terms):
             return numer(i) / (denom(i) + iter(i + 1))
     return iter(1)
 
-def cont_phi_recursive(k):
-    return 1 / cont_frac_recursive(lambda n : 1, lambda d : 1, k)
-
 def cont_frac_iterative(numer, denom, terms):
     def iter(i, result):
         if (i == 0):
@@ -739,9 +736,30 @@ def cont_frac_iterative(numer, denom, terms):
             return iter(i - 1, numer(i) / (denom(i) + result))
     return iter(terms, 0)
 
+def cont_phi(k, which):
+    return 1 / which(lambda n : 1, lambda d : 1, k)
+
+def cont_phi_recursive(k):
+    return cont_phi(k, cont_frac_recursive)
+
 def cont_phi_iterative(k):
-    return 1 / cont_frac_iterative(lambda n : 1, lambda d : 1, k)
+    return cont_phi(k, cont_frac_iterative)
 
 for k in range(1, 20 + 1):
     print(k, cont_phi_recursive(k), cont_phi_iterative(k))
 
+# ex.1.38
+def cont_napier(k, which):
+    return 2 + which(
+        lambda n : 1,
+        lambda d : 1 if d % 3 != 2 else 2 * (d + 1) / 3,
+        k)
+
+def cont_napier_recursive(k):
+    return cont_napier(k, cont_frac_recursive)
+
+def cont_napier_iterative(k):
+    return cont_napier(k, cont_frac_iterative)
+
+for k in range(1, 10 + 1):
+    print(k, cont_napier_recursive(k), cont_napier_iterative(k))
