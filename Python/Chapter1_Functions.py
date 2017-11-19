@@ -736,55 +736,54 @@ def cont_frac_iterative(numer, denom, terms):
             return iter(i - 1, numer(i) / (denom(i) + result))
     return iter(terms, 0)
 
-def cont_phi(k, which):
-    return 1 / which(lambda n : 1, lambda d : 1, k)
+def cont_phi(terms, which):
+    return 1 / which(lambda n : 1, lambda d : 1, terms)
 
-def cont_phi_recursive(k):
-    return cont_phi(k, cont_frac_recursive)
+def cont_phi_recursive(terms):
+    return cont_phi(terms, cont_frac_recursive)
 
 def cont_phi_iterative(k):
-    return cont_phi(k, cont_frac_iterative)
+    return cont_phi(terms, cont_frac_iterative)
 
-for k in range(1, 20 + 1):
-    print(k, cont_phi_recursive(k), cont_phi_iterative(k))
+for terms in range(1, 20 + 1):
+    print(terms, cont_phi_recursive(terms), cont_phi_iterative(terms))
 
 # ex.1.38
-def cont_napier(k, which):
+def cont_napier(terms, which):
     return 2 + which(
         lambda n : 1,
         lambda d : 1 if d % 3 != 2 else 2 * (d + 1) / 3,
-        k)
+        terms)
 
-def cont_napier_recursive(k):
-    return cont_napier(k, cont_frac_recursive)
+def cont_napier_recursive(terms):
+    return cont_napier(terms, cont_frac_recursive)
 
-def cont_napier_iterative(k):
-    return cont_napier(k, cont_frac_iterative)
+def cont_napier_iterative(terms):
+    return cont_napier(terms, cont_frac_iterative)
 
-for k in range(1, 10 + 1):
-    print(k, cont_napier_recursive(k), cont_napier_iterative(k))
+for terms in range(1, 10 + 1):
+    print(terms, cont_napier_recursive(terms), cont_napier_iterative(terms))
 
 # ex.1.39
-def tan_cf(x, k, which):
+def tan_cf(x, terms, which):
     def minus_xtanx():
         return which(lambda n : -1 * x * x,
                      lambda d : 2 * d - 1,
-                     k)
+                     terms)
     return -1 * minus_xtanx() / x
 
-terms = 10
-tan_cf(pi, terms, cont_frac_iterative)
-tan_cf(pi, terms, cont_frac_recursive)
+tan_cf(pi, 10, cont_frac_iterative)
+tan_cf(pi, 10, cont_frac_recursive)
 # -1.8932141493591683e-09 ; tan(pi) = 0
 
-tan_cf(pi / 2, terms, cont_frac_iterative)
-tan_cf(pi / 2, terms, cont_frac_recursive)
+tan_cf(pi / 2, 10, cont_frac_iterative)
+tan_cf(pi / 2, 10, cont_frac_recursive)
 # 744656605476677.9 ; tan(pi/2) = nan
 
-tan_cf(pi / 4, terms, cont_frac_iterative)
-tan_cf(pi / 4, terms, cont_frac_recursive)
+tan_cf(pi / 4, 10, cont_frac_iterative)
+tan_cf(pi / 4, 10, cont_frac_recursive)
 # 1.0 ; tan(pi/4) = 1
 
-tan_cf(pi / 3, terms, cont_frac_iterative)
-tan_cf(pi / 3, terms, cont_frac_recursive)
+tan_cf(pi / 3, 10, cont_frac_iterative)
+tan_cf(pi / 3, 10, cont_frac_recursive)
 # 1.7320508075688767 ; tan(pi/3) = sqrt(3)
