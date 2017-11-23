@@ -864,3 +864,20 @@ solve_cubic(-4, -3, 18) # (x-3)^2(x+2)=0
 # 2.9999998505332477
 solve_cubic(4, -3, -18) # (x+3)^2(x-2)=0
 # 2.0000000000000058
+
+# ex.1.41
+def double(f):
+    return lambda x : f(f(x))
+
+inc(5) # 6 = 5 + 1
+double(inc)(5) # 7 = 5 + 1 * 2
+double(double)(inc)(5) # 9 = 5 + 1 * 2 ** 2
+double(double(double))(inc)(5) # 21 = 5 + 1 * (2 ** 2) ** 2
+double(double(double(double)))(inc)(5) # 261 = 5 + 1 * ((2 ** 2) ** 2) ** 2
+
+# ex.1.42
+def compose(f, g):
+    return lambda x : f(g(x))
+
+compose(square, inc)(5) # 36 = square(inc(5))
+compose(inc, square)(5) # 26 = inc(square(5))
