@@ -894,3 +894,19 @@ repeated(square, 2)(2) # 16 = 2 ** (2**2)
 repeated(square, 3)(2) # 256 = 2 ** (2**3)
 repeated(square, 4)(2) # 65536 = 2 ** (2**4)
 repeated(square, 2)(5) # 625 = 5 ** (2**2)
+
+# ex.1.44
+def smooth(f, dx):
+    return lambda x : (f(x - dx) + f(x) + f(x + dx)) / 3
+
+def n_fold_smooth(f, dx, n):
+    return repeated(smooth(f, dx), n)
+
+sin(pi / 2)
+# 1.0
+smooth(sin, 0.5)(pi / 2)
+# 0.9183883745935818
+n_fold_smooth(sin, 0.5, 2)(pi / 2)
+# 0.7297736569131135
+[n_fold_smooth(sin, 0.5, n)(pi / 2) for n in range(1, 5 + 1)]
+# [0.9183883745935818, 0.7297736569131135, 0.6122904044264151, 0.5278375479126857, 0.46256134964672047]
