@@ -929,3 +929,35 @@ def nth_root(x, n):
 
 [nth_root(3, n) ** n for n in range(1, 100 + 1)]
 [nth_root(0.42 ** n, n) for n in range(1, 100 + 1)]
+
+# ex.1.46
+def iterative_improve(is_good_enough, improve):
+    def try_it(guess):
+        next = improve(guess)
+        if is_good_enough(guess, next):
+            return next
+        else:
+            return try_it(next)
+    return lambda guess : try_it(guess)
+
+def my_sqrt_again(x):
+    func = iterative_improve(
+        lambda guess, next : abs((next - guess) / next) < 1e-3,
+        lambda guess : average(guess, x / guess))
+    return func(1)
+
+def my_fixed_point_again(f, first_guess):
+    func = iterative_improve(
+        lambda guess, next : abs((next - guess) / next) < 1e-3,
+        f)
+    return func(first_guess)
+
+def fixed_sqrt_again(x):
+    return my_fixed_point_again(lambda y : average(y, x / y), 1)
+
+my_sqrt_again(2)
+# 1.4142135623746899
+my_fixed_point_again(cos, 1)
+# 0.7393038923969057
+fixed_sqrt_again(2)
+# 1.4142135623746899
