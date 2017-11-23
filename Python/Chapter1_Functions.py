@@ -881,3 +881,16 @@ def compose(f, g):
 
 compose(square, inc)(5) # 36 = square(inc(5))
 compose(inc, square)(5) # 26 = inc(square(5))
+
+# ex.1.43
+def repeated(f, n):
+    if (n == 0):
+        return lambda x : x
+    else:
+        return compose(f, repeated(f, n - 1))
+
+repeated(square, 1)(2) # 2 = 2 ** (2**1)
+repeated(square, 2)(2) # 16 = 2 ** (2**2)
+repeated(square, 3)(2) # 256 = 2 ** (2**3)
+repeated(square, 4)(2) # 65536 = 2 ** (2**4)
+repeated(square, 2)(5) # 625 = 5 ** (2**2)
