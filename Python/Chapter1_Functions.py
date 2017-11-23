@@ -787,3 +787,80 @@ tan_cf(pi / 4, 10, cont_frac_recursive)
 tan_cf(pi / 3, 10, cont_frac_iterative)
 tan_cf(pi / 3, 10, cont_frac_recursive)
 # 1.7320508075688767 ; tan(pi/3) = sqrt(3)
+
+# 1.3.4
+def average_damp(f):
+    return lambda x : average(x, f(x))
+
+average_damp(square)(10)
+# 55.0
+
+def re_sqrt(x):
+    return fixed_point(average_damp(lambda y : x / y),
+                       1.0)
+
+re_sqrt(2)
+# 1.414213562373095
+re_sqrt(3)
+# 1.7320508075688772
+
+def re_cbrt(x):
+    return fixed_point(average_damp(lambda y : x / square(y)),
+                       1.0)
+
+cube(re_cbrt(2))
+# 1.9999986984189864
+cube(re_cbrt(3))
+# 2.99999826198191
+
+dx = 1e-6
+def deriv(g):
+    return lambda x : (g(x + dx) - g(x)) / dx
+
+deriv(cube)(5) # (x**3)'(5) = (3 * x**2)(5) = 3 * 25 = 75.
+# 75.00001501625775
+
+def newton_transform(g):
+    return lambda x : x - g(x) / deriv(g)(x)
+def newtons_method(g, guess):
+    return fixed_point(newton_transform(g), guess)
+
+def newton_sqrt(x):
+    return newtons_method(lambda y : square(y) - x, 1.0)
+
+newton_sqrt(2)
+# 1.4142135623730951
+newton_sqrt(3)
+# 1.732050807568878
+
+def fixed_point_of_transform(g, transform, guess):
+    return fixed_point(transform(g), guess)
+
+def sqrt1(x):
+    return fixed_point_of_transform(
+        lambda y : x / y, average_damp, 1.0)
+
+def sqrt2(x):
+    return fixed_point_of_transform(
+        lambda y : square(y) - x, newton_transform, 1.0)
+
+sqrt1(2)
+# 1.414213562373095
+sqrt2(2)
+# 1.4142135623730951
+
+# ex.1.40
+def cubic(a, b, c):
+    return lambda x : cube(x) + a * square(x) + b * x + c
+
+def solve_cubic(a, b, c):
+    return newtons_method(cubic(a, b, c), 1.0)
+
+solve_cubic(0, 0, -8) # (x-2)^3=0
+# 2.0
+solve_cubic(-3, 1, -3) # (x-3)(x^2+1)=0
+# 3.0
+solve_cubic(-4, -3, 18) # (x-3)^2(x+2)=0
+# 2.9999998505332477
+solve_cubic(4, -3, -18) # (x+3)^2(x-2)=0
+# 2.0000000000000058
