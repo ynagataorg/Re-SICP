@@ -910,3 +910,22 @@ n_fold_smooth(sin, 0.5, 2)(pi / 2)
 # 0.7297736569131135
 [n_fold_smooth(sin, 0.5, n)(pi / 2) for n in range(1, 5 + 1)]
 # [0.9183883745935818, 0.7297736569131135, 0.6122904044264151, 0.5278375479126857, 0.46256134964672047]
+
+# ex.1.45
+def try_4th_failed(x):
+    return fixed_point(average_damp(lambda y : x / y ** 3), 1.0)
+try_4th_failed(16)
+# raise RecursionError
+
+def try_4th(x):
+    return fixed_point(repeated(average_damp, 2)(lambda y : x / y ** 3), 1.0)
+try_4th(16)
+# 2.0
+
+def nth_root(x, n):
+    return fixed_point(
+        repeated(average_damp, floor(log2(n)))(lambda y : x / y ** (n - 1)),
+        1.0)
+
+[nth_root(3, n) ** n for n in range(1, 100 + 1)]
+[nth_root(0.42 ** n, n) for n in range(1, 100 + 1)]
