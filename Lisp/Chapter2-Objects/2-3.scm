@@ -40,6 +40,12 @@
         ((and (number? m1) (number? m2)) (* m1 m2))
         (else (list '* m1 m2))))
 
+(define (make-exponent base exponent)
+  (cond ((=number? exponent 0) 1)
+        ((=number? exponent 1) base)
+        ((and (number? base) (number? exponent)) (expt base exponent))
+        (else (list '** base exponent))))
+
 (define (sum? x)
   (and (pair? x) (eq? (car x) '+)))
 (define (addend s) (cadr s))
@@ -48,7 +54,11 @@
   (and (pair? x) (eq? (car x) '*)))
 (define (multiplier p) (cadr p))
 (define (multiplicand p) (caddr p))
-  
+(define (exponent? x)
+  (and (pair? x) (eq? (car x) '**)))
+(define (base e) (cadr e))
+(define (exponent e) (caddr e))
+
 (define (deriv exp var)
   (cond ((number? exp) 0)
         ((variable? exp) (if (same-variable? exp var) 1 0))
@@ -60,6 +70,12 @@
                         (deriv (multiplicand exp) var))
           (make-product (deriv (multiplier exp) var)
                         (multiplicand exp))))
+        ((exponent? exp)
+         (make-product
+          (make-product (exponent exp)
+                        (make-exponent (base exp)
+                                       (- (exponent exp) 1)))
+          (deriv (base exp) var)))
         (else
          (error "unsupported expression type: DERIV" exp))))
 
@@ -71,3 +87,13 @@
 'x
 (deriv '(* (* x y) (+ x 3)) 'x)
 '(+ (* x y) (* y (+ x 3)))
+
+(deriv '(** x 0) 'x) ; x**0 d/dx = 1 d/dx = 0
+(deriv '(** x 1) 'x) ; x**1 d/dx = x d/dx = 1
+(deriv '(** x 2) 'x) ; x**2 d/dx = 2 * x**(2-1) * 1
+(deriv '(** x 3) 'x) ; x**3 d/dx = 3 * x**(3-1) * 1
+
+(deriv '(** (+ x 2) 3) 'x) ; (x+2)**3 d/dx = 3 * (x+2)**2 * 1
+'(* 3 (** (+ x 2) 2))
+(deriv '(** (+ (* x y) 1) 3) 'x) ; (xy+1)**3 d/dx = 3 * (xy+1)**2 * y
+'(* (* 3 (** (+ (* x y) 1) 2)) y)
