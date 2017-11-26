@@ -21,6 +21,12 @@
 (equal? '(this is a list) '(this (is a) list))
 
 ; 2.3.2
+(define (accumulate op initial seq)
+  (if (null? seq)
+      initial
+      (op (car seq)
+          (accumulate op initial (cdr seq)))))
+
 (define (variable? x) (symbol? x))
 (define (same-variable? v1 v2)
   (and (variable? v1) (variable? v2) (eq? v1 v2)))
@@ -49,11 +55,11 @@
 (define (sum? x)
   (and (pair? x) (eq? (car x) '+)))
 (define (addend s) (cadr s))
-(define (augend s) (caddr s))
+(define (augend s) (accumulate make-sum 0 (cddr s)))
 (define (product? x)
   (and (pair? x) (eq? (car x) '*)))
 (define (multiplier p) (cadr p))
-(define (multiplicand p) (caddr p))
+(define (multiplicand p) (accumulate make-product 1 (cddr p)))
 (define (exponent? x)
   (and (pair? x) (eq? (car x) '**)))
 (define (base e) (cadr e))
@@ -86,7 +92,7 @@
 (deriv '(* x y) 'y)
 'x
 (deriv '(* (* x y) (+ x 3)) 'x)
-'(+ (* x y) (* y (+ x 3)))
+(deriv '(* x y (+ x 3)) 'x)
 
 (deriv '(** x 0) 'x) ; x**0 d/dx = 1 d/dx = 0
 (deriv '(** x 1) 'x) ; x**1 d/dx = x d/dx = 1
