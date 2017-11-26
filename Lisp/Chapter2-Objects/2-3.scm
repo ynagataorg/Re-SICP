@@ -14,6 +14,7 @@
 (define (equal? items1 items2)
   (cond ((and (null? items1) (null? items2)) #t)
         ((or (null? items1) (null? items2)) #f)
+        ((and (not (pair? items1)) (not (pair? items2))) (eq? items1 items2))
         ((not (eq? (car items1) (car items2))) #f)
         (else (equal? (cdr items1) (cdr items2)))))
 
@@ -103,3 +104,28 @@
 '(* 3 (** (+ x 2) 2))
 (deriv '(** (+ (* x y) 1) 3) 'x) ; (xy+1)**3 d/dx = 3 * (xy+1)**2 * y
 '(* (* 3 (** (+ (* x y) 1) 2)) y)
+
+; 2.3.3
+(define (element-of-set? x set)
+  (cond ((null? set) #f)
+        ((equal? x (car set)) #t)
+        (else (element-of-set? x (cdr set)))))
+(define (adjoin-set x set)
+  (if (element-of-set? x set)
+      set
+      (cons x set)))
+(define (intersection-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) '())
+        ((element-of-set? (car set1) set2)
+         (cons (car set1) (intersection-set (cdr set1) set2)))
+        (else (intersection-set (cdr set1) set2))))
+(define (union-set set1 set2)
+  (cond ((null? set1) set2)
+        ((not (element-of-set? (car set1) set2))
+         (cons (car set1) (union-set (cdr set1) set2)))
+        (else (union-set (cdr set1) set2))))
+
+(define s1 '(1 2 3))
+(define s2 '(2 3 4))
+(intersection-set s1 s2)
+(union-set s1 s2)
