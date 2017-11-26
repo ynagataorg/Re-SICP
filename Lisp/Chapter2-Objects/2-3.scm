@@ -15,9 +15,11 @@
   (cond ((and (null? items1) (null? items2)) #t)
         ((or (null? items1) (null? items2)) #f)
         ((and (not (pair? items1)) (not (pair? items2))) (eq? items1 items2))
-        ((not (eq? (car items1) (car items2))) #f)
-        (else (equal? (cdr items1) (cdr items2)))))
+        ((or (not (pair? items1)) (not (pair? items2))) #f)
+        (else (and (equal? (car items1) (car items2))
+                   (equal? (cdr items1) (cdr items2))))))
 
+(equal? '(this is) '(this))
 (equal? '(this is a list) '(this is a list))
 (equal? '(this is a list) '(this (is a) list))
 
