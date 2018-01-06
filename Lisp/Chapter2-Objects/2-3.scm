@@ -131,3 +131,26 @@
 (define s2 '(2 3 4))
 (intersection-set s1 s2)
 (union-set s1 s2)
+
+; ex.2.60
+(define (element-of-set-dup? x set)
+  (element-of-set? x set))
+(define (adjoin-set-dup x set)
+  (cons x set))
+(define (intersection-set-dup set1 set2)
+  (intersection-set set1 set2))
+(define (union-set-dup set1 set2)
+  (append set1 set2))
+; TIME: adjoin-set O(n) vs. adjoin-set-dup O(1)
+; TIME: union-set O(n^2) vs. union-set-dup O(n)
+; SPACE: dup-versions uses more than originals.
+
+(define s3 '(2 3 2 1 3 2 2))
+(define s4 (adjoin-set-dup 4 s3))
+(element-of-set-dup? 2 s3) ;#t
+(element-of-set-dup? 4 s3) ;#f
+(element-of-set-dup? 4 s4) ;#t
+(intersection-set-dup s3 s4)
+(union-set-dup s1 s2)
+(intersection-set-dup (union-set-dup s1 s2) s3)
+(intersection-set-dup (union-set-dup s1 s2) s4)
