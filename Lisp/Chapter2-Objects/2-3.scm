@@ -154,3 +154,27 @@
 (union-set-dup s1 s2)
 (intersection-set-dup (union-set-dup s1 s2) s3)
 (intersection-set-dup (union-set-dup s1 s2) s4)
+
+; ex.2.61 (adjoin-set-ord)
+(define (element-of-set-ord? x set)
+  (cond ((null? set) #f)
+        ((= x (car set)) #t)
+        ((< x (car set)) #f)
+        (else (element-of-set-ord? x (cdr set)))))
+(define (adjoin-set-ord x set)
+  (cond ((null? set) (list x))
+        ((= x (car set)) set)
+        ((< x (car set)) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set-ord x (cdr set))))))
+
+(define s5 (adjoin-set-ord 1 (adjoin-set-ord 5 (adjoin-set-ord 3 '()))))
+s5 ;'(1 3 5)
+(element-of-set-ord? 2 s5) ;#f
+(element-of-set-ord? 3 s5) ;#t
+(adjoin-set-ord 0 s5)
+(adjoin-set-ord 2 s5)
+(adjoin-set-ord 4 s5)
+(adjoin-set-ord 6 s5)
+
+; ex.2.62 (union-set-ord in O(n))
