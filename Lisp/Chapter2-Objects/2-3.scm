@@ -190,21 +190,24 @@ s5 ;'(1 3 5)
                (intersection-set-ord set1 (cdr set2))))
         )))
 (define (union-set-ord set1 set2)
-  (if (or (null? set1) (null? set2))
-      '()
-      (let ((x1 (car set1)) (x2 (car set2)))
-        (cond ((= x1 x2)
-               (cons x1 (union-set-ord (cdr set1) (cdr set2))))
-              ((< x1 x2)
-               (cons x1 (union-set-ord (cdr set1) set2)))
-              ((> x1 x2)
-               (cons x2 (union-set-ord set1 (cdr set2)))))
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        (else
+         (let ((x1 (car set1)) (x2 (car set2)))
+           (cond ((= x1 x2)
+                  (cons x1 (union-set-ord (cdr set1) (cdr set2))))
+                 ((< x1 x2)
+                  (cons x1 (union-set-ord (cdr set1) set2)))
+                 ((> x1 x2)
+                  (cons x2 (union-set-ord set1 (cdr set2))))))
         )))
 
 (intersection-set-ord (adjoin-set-ord 2 s5) (adjoin-set-ord 4 s5))
 '(1 3 5)
 (union-set-ord (adjoin-set-ord 2 s5) (adjoin-set-ord 4 s5))
 '(1 2 3 4 5)
+(union-set-ord '(1 2 3) '(2 3 4))
+'(1 2 3 4)
 
 ; ex.2.63
 (define (entry tree) (car tree))
@@ -316,3 +319,25 @@ s5 ;'(1 3 5)
 ;   top-entry is 5,
 ;   left-node is a partial tree (1 () (3 () ())),
 ;   right-node is a partial tree (9 (7 () ()) (11 () ())).
+
+; ex.2.65
+; tree->list-2 is O(n), list->tree is O(n).
+; both union-set-ord and intersection-set-ord is O(n).
+(define (union-set-b set1 set2)
+  (list->tree
+   (union-set-ord (tree->list-2 set1)
+                  (tree->list-2 set2))))
+
+(list->tree s1)
+(list->tree s2)
+(union-set-b (list->tree s1) (list->tree s2))
+(equal? (union-set s1 s2)
+        (tree->list-2 (union-set-b (list->tree s1) (list->tree s2))))
+
+(define (intersection-set-b set1 set2)
+  (list->tree
+   (intersection-set-ord (tree->list-2 set1)
+                         (tree->list-2 set2))))
+(intersection-set-b (list->tree s1) (list->tree s2))
+(equal? (intersection-set s1 s2)
+        (tree->list-2 (intersection-set-b (list->tree s1) (list->tree s2))))
