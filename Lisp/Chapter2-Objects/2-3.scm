@@ -269,3 +269,50 @@ s5 ;'(1 3 5)
 (tree->list-2 t3)
 ; '(1 3 5 7 9 11)
 
+; ex.2.64
+(define (list->tree elements)
+  (define (partial-tree elts n)
+    ; making "partial tree" from a list "elts".
+    ; "n" is the size of "partial tree".
+    ; "car" side of the result: "partial tree" is constructed
+    ; "cdr" side of the result: remaining elts is remained(decreasing)
+    (if (= n 0)
+        (cons '() elts)
+        (let ((left-size (quotient (- n 1) 2)))
+          (let ((left-result
+                 (partial-tree elts left-size)))
+            ; left-result is a partial tree
+            ; from first half of elts.
+            ; the size decreases as the recursion progresses.
+            (let ((left-tree (car left-result))
+                  (non-left-elts (cdr left-result))
+                  (right-size (- n (+ left-size 1))))
+              (let ((this-entry (car non-left-elts))
+                    (right-result
+                     (partial-tree
+                      (cdr non-left-elts) right-size)))
+                ; this-entry is the first element of the remaining.
+                (let ((right-tree (car right-result))
+                      (remaining-elts (cdr right-result)))
+                  (cons (make-tree this-entry
+                                   left-tree
+                                   right-tree)
+                        ; here cons
+                        ; (list this-entry left-tree right-tree)
+                        ; and remaining-elts : (cdr right-result).
+                        remaining-elts))))))))
+  (car (partial-tree elements (length elements))))
+
+(list->tree '(1 3 5 7 9 11))
+; 1st: left-tree is from (1 3), this-entry is 5, right-tree is from (7 9 11).
+; 2nd: left-tree is nil, this-entry is 1, right-tree is from (3).
+; 3rd: left-tree is nil, this-entry is 3, right-tree is from nil.
+;   so left-tree of the 1st step is
+;      (1 () (3 () ())).
+; 4th: left-tree is from (7), this-entry is 9, right-tree is from (11).
+;   so right-tree of the 1st step is
+;      (9 (7 () ()) (11 () ())).
+; Consequently, (list->tree '(1 3 5 7 9 11)) returns the tree
+;   top-entry is 5,
+;   left-node is a partial tree (1 () (3 () ())),
+;   right-node is a partial tree (9 (7 () ()) (11 () ())).
